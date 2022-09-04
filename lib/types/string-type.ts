@@ -1,12 +1,28 @@
-import { RunnerContext } from "../runner-context";
+import { Runner, RunnerContext } from "../runner-context";
+import { GenericRunnerOptions } from "./common";
 
-export function STRING({ formatName, store }: RunnerContext, parsedResult: GenericObject): boolean {
-  let name = formatName(parsedResult.name);
-  let value = parsedResult.value;
-  if (value == null)
-    return false;
+export function STRING(options?: GenericRunnerOptions): Runner {
+  const runner = function ({ formatName, store }: RunnerContext, parsedResult: GenericObject): boolean {
+    let name = formatName(parsedResult.name);
+    let value = parsedResult.value;
+    if (value == null)
+      return false;
 
-  store({ [ name ]: value });
+    if (options && typeof options.validate === 'function') {
+      let result = options.validate(value, arguments[ 0 ]);
+      if (!result)
+        return false;
+    }
 
-  return true;
+    store({ [ name ]: value });
+
+    return true;
+  };
+
+  if (options && options.solo != null)
+    runner.parserOptions = { solo: !!options.solo };
+
+  return runner;
 }
+
+STRING.wrapper = true;

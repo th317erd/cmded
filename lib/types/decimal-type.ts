@@ -1,10 +1,15 @@
 import { Runner, RunnerContext } from "../runner-context";
 import { GenericRunnerOptions } from "./common";
 
-export function BOOLEAN(options?: GenericRunnerOptions): Runner {
+export function DECIMAL(options?: GenericRunnerOptions): Runner {
   const runner = function ({ formatName, store }: RunnerContext, parsedResult: GenericObject): boolean {
     let name = formatName(parsedResult.name);
-    let value = (parsedResult.value == null || (/^true|1$/i).test(parsedResult.value));
+    if (!(/^[+-]?(\d*.\d+|\d+.\d*)(e[+-]\d+)?$/).test(parsedResult.value))
+      return false;
+
+    let value = Math.round(parseFloat(parsedResult.value));
+    if (!isFinite(value))
+      return false;
 
     if (options && typeof options.validate === 'function') {
       let result = options.validate(value, arguments[ 0 ]);
@@ -17,12 +22,10 @@ export function BOOLEAN(options?: GenericRunnerOptions): Runner {
     return true;
   };
 
-  runner.parserOptions = { solo: true };
   if (options && options.solo != null)
-    runner.parserOptions.solo = !!options.solo;
+    runner.parserOptions = { solo: !!options.solo };
 
   return runner;
 }
 
-BOOLEAN.wrapper = true;
-BOOLEAN.parserOptions = { solo: true };
+DECIMAL.wrapper = true;

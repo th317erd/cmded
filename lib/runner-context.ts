@@ -6,9 +6,10 @@ export declare type RunnerResult = Promise<boolean> | boolean;
 export declare type Runner = {
   (context: RunnerContext, parsedResult: GenericObject): RunnerResult;
   parserOptions?: GenericObject;
+  wrapper?: boolean;
 };
 
-export declare type PatternMatcher = (context?: RunnerContext) => GenericObject | undefined;
+export declare type PatternMatcher = (context: RunnerContext, options: GenericObject, index: number) => GenericObject | undefined;
 
 export interface RunnerContextOptions {
   rootOptions: RootOptions;
@@ -19,9 +20,11 @@ export interface RunnerContextOptions {
 
 export class RunnerContext {
   declare private options: RunnerContextOptions;
+  declare private matchCount: number;
 
   constructor(options: RunnerContextOptions) {
     this.options = options;
+    this.matchCount = 0;
   }
 
   get rootOptions(): RootOptions {
@@ -62,7 +65,11 @@ export class RunnerContext {
 
     if (Nife.instanceOf(_scope, 'string')) {
       let scope = _scope as string;
-      return Nife.get(context, scope, defaultValue);
+      let value = Nife.get(context, scope);
+      if (value === undefined)
+        value = defaultValue;
+
+      return value;
     } else {
       let scope = _scope as GenericObject;
       let keys = Object.keys(scope);
@@ -102,14 +109,10 @@ export class RunnerContext {
       Nife.set(context, scope, value);
     } else {
       let scope = _scope as GenericObject;
-      let keys = Object.keys(scope);
+      if (!scope)
+        return;
 
-      for (let i = 0, il = keys.length; i < il; i++) {
-        let key = keys[ i ];
-        let thisValue = scope[ key ];
-
-        Nife.set(context, key, thisValue);
-      }
+      Nife.extend(true, context, scope);
     }
   }
 
@@ -159,36 +162,80 @@ export class RunnerContext {
     }
   }
 
-  match = (_pattern: string | RegExp | PatternMatcher, runner: Runner, options?: GenericObject): Promise<boolean> | boolean => {
+  match = (
+    _pattern: string | RegExp | PatternMatcher | null | undefined,
+    runner: Runner,
+    options?: GenericObject,
+  ): Promise<boolean> | boolean => {
     let finalResult: Promise<boolean> | boolean = false;
 
     const wrappedRunner = (context: RunnerContext, parsedResult: GenericObject) => {
       let runnerPath = this.runnerPath;
       if (parsedResult && parsedResult.name)
-        runnerPath = (runnerPath) ? `${runnerPath}/${parsedResult.name}` : parsedResult.name;
+        runnerPath = (runnerPath) ? `${runnerPath}.${parsedResult.name}` : parsedResult.name;
 
       let newContext = this.clone({
         runnerPath,
       });
 
-      return runner(newContext, parsedResult);
+      let _runner = runner;
+      if (typeof runner === 'function' && runner.wrapper) {
+        // "wrapper" is set to true when the runner
+        // should be called to provide options. If
+        // the user forgot to call it, then "wrapper"
+        // will be `true`. So let's call it now, providing
+        // no options.
+
+        // @ts-ignore
+        _runner = runner();
+      }
+
+      let runnerResult = _runner(newContext, parsedResult);
+      if (Nife.instanceOf(runnerResult, 'promise')) {
+        (runnerResult as Promise<boolean>).then((result) => {
+          if (result)
+            this.matchCount++;
+        });
+      } else if (runnerResult) {
+        this.matchCount++;
+      }
+
+      return runnerResult;
     };
 
     this.args.iterate(({ index, stop }) => {
-      if (Nife.instanceOf(_pattern, 'string')) {
+      if (_pattern == null || Nife.instanceOf(_pattern, 'string')) {
         let pattern = _pattern as string;
+        if (!pattern && !(options && options.name))
+          throw new Error('RunnerContext::match: "name" option must be supplied if you have specified a "null" pattern.');
+
+        let parserOptions: GenericObject = {
+          ...(runner.parserOptions || {}),
+          ...(options || {}),
+          consume: false,
+          pattern,
+        };
+
+        if (!pattern)
+          parserOptions.solo = true;
+
         let result = this.parse(
-          {
-            ...(runner.parserOptions || {}),
-            ...(options || {}),
-            consume: false,
-          },
+          parserOptions,
           index,
         );
 
-        if (result && result.rawName === pattern) {
+        if (result && (!pattern || (pattern && result.rawName === pattern))) {
           this.markConsumed(result.notConsumed);
+
+          result.notConsumed = [];
+
+          if (options && typeof options.formatParsedResult === 'function') {
+            // @ts-ignore
+            result = options.formatParsedResult(result, this, options) as GenericObject;
+          }
+
           finalResult = wrappedRunner(this, result);
+
           stop();
         }
       } else if (Nife.instanceOf(_pattern, RegExp)) {
@@ -198,14 +245,27 @@ export class RunnerContext {
           let result = arg.match(pattern);
           if (result) {
             this.markConsumed(this.args.currentIndex);
+
+            if (options && typeof options.formatParsedResult === 'function') {
+              // @ts-ignore
+              result = options.formatParsedResult(result, this, options) as GenericObject;
+            }
+
+            // @ts-ignore
             finalResult = wrappedRunner(this, result);
+
             stop();
           }
         }
       } else {
         let pattern = _pattern as PatternMatcher;
-        let result = pattern(this);
+        let result = pattern(this, options || {}, index);
         if (result) {
+          if (options && typeof options.formatParsedResult === 'function') {
+            // @ts-ignore
+            result = options.formatParsedResult(result, this, options) as GenericObject;
+          }
+
           finalResult = wrappedRunner(this, result);
           stop();
         }
@@ -215,7 +275,7 @@ export class RunnerContext {
     return finalResult;
   }
 
-  get $(): (_pattern: string | RegExp | PatternMatcher, runner: Runner, options?: GenericObject) => Promise<boolean> | boolean {
+  get $(): (_pattern: string | RegExp | PatternMatcher | null | undefined, runner: Runner, options?: GenericObject) => Promise<boolean> | boolean {
     return this.match;
   }
 
@@ -233,6 +293,6 @@ export class RunnerContext {
   };
 
   hasMatches = (): boolean => {
-    return (Object.keys(this.context).length > 0);
+    return (this.matchCount > 0);
   }
 }

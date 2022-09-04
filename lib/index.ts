@@ -2,64 +2,20 @@ import Nife from 'nife';
 import { Runner, RunnerContext } from './runner-context';
 import { RootOptions } from './root-options';
 import { Arguments } from './arguments';
+import { defaultParser } from './default-parser';
+import { defaultFormatter } from './default-formatter';
 
-export function defaultArgumentParser(context: RunnerContext, options: GenericObject = {}, _index: number | undefined): GenericObject | undefined {
-  let doConsume = (options.consume !== false) ? true : false;
-  let args = context.args;
-  let index = (_index == null) ? args.currentIndex : _index;
-  let arg = (doConsume) ? args.consume(index) : args.get(index);
-  if (typeof arg !== 'string')
-    return;
+export declare type FinalResult = Promise<GenericObject | undefined> | GenericObject | undefined;
 
-  let prefix;
-  let name;
-  let rawName;
-  let value;
-  let notConsumed = (doConsume) ? [] : [ index ];
-  let indexes = [ index ];
 
-  arg.replace(/^([\W]*)([\w-]+)(?:=(.*))?$/, (m, _prefix, _name, _value) => {
-    prefix = _prefix || undefined;
-    name = _name;
-    value = _value || undefined;
 
-    return m;
-  });
 
-  if (prefix && !value && options.singleton !== true) {
-    arg = (doConsume) ? args.consume(index + 1) : args.get(index + 1);
 
-    if (typeof arg === 'string') {
-      if (!doConsume) {
-        notConsumed.push(index + 1);
-        indexes.push(index + 1);
-      } else {
-        indexes.push(index + 1);
-      }
-
-      value = arg;
-    }
-  }
-
-  return {
-    rawName: `${prefix || ''}${name}`,
-    prefix,
-    name,
-    value,
-    notConsumed,
-    indexes,
-  };
-}
-
-export function defaultFormatter(context: RunnerContext, name: string): string {
-  return name;
-}
-
-export function CMDed(runner: Runner, _options?: RootOptions): Promise<GenericObject | undefined> | GenericObject | undefined {
+export function CMDed(runner: Runner, _options?: RootOptions): FinalResult {
   let rootOptions: RootOptions = {
     strict: false,
     argv: process.argv.slice(2),
-    parser: defaultArgumentParser,
+    parser: defaultParser,
     formatter: defaultFormatter,
     ...(_options || {}),
   };
@@ -81,6 +37,45 @@ export function CMDed(runner: Runner, _options?: RootOptions): Promise<GenericOb
     },
   });
 
+  const finalizeResult = (result: boolean, resolve?: (value: any) => void, reject?: (value: any) => void): FinalResult => {
+    if (!result) {
+      runnerContext.showHelp();
+
+      if (typeof resolve === 'function')
+        resolve(undefined);
+
+      return;
+    } else {
+      let unconsumed = runnerContext.args.getUnconsumed();
+      if (rootOptions.strict && unconsumed.length > 0) {
+        runnerContext.showHelp();
+
+        if (typeof resolve === 'function')
+          resolve(undefined);
+
+        return;
+      }
+
+      let remaining = unconsumed.map((index) => runnerContext.args.get(index));
+      if (!Object.prototype.hasOwnProperty.call(runnerContext.context, '_remaining')) {
+        Object.defineProperties(runnerContext.context, {
+          '_remaining': {
+            writable: true,
+            enumerable: false,
+            configurable: true,
+            value: remaining,
+          },
+        });
+      }
+
+      let finalContext = runnerContext.fetch();
+      if (typeof resolve === 'function')
+        resolve(finalContext);
+
+      return finalContext;
+    }
+  };
+
   let result = runner(runnerContext, {});
   if (Nife.instanceOf(result, 'promise')) {
     let promise = result as Promise<boolean>;
@@ -88,18 +83,7 @@ export function CMDed(runner: Runner, _options?: RootOptions): Promise<GenericOb
     return new Promise((resolve, reject) => {
       promise.then(
         (result) => {
-          if (!result) {
-            runnerContext.showHelp();
-            resolve(undefined);
-          } else {
-            if (rootOptions.strict && runnerContext.args.getUnconsumed().length > 0) {
-              runnerContext.showHelp();
-              resolve(undefined);
-              return;
-            }
-
-            resolve(runnerContext.fetch());
-          }
+          finalizeResult(result as boolean, resolve, reject);
         },
         (error) => {
           reject(error);
@@ -108,19 +92,12 @@ export function CMDed(runner: Runner, _options?: RootOptions): Promise<GenericOb
     });
   }
 
-  if (!result) {
-    runnerContext.showHelp();
-    return;
-  } else {
-    if (rootOptions.strict && runnerContext.args.getUnconsumed().length > 0) {
-      runnerContext.showHelp();
-      return;
-    }
-  }
-
-  return runnerContext.fetch();
+  return finalizeResult(result as boolean);
 }
 
+export * as Types from './types';
+export * from './arguments';
+export * from './default-formatter';
+export * from './default-parser';
 export * from './root-options';
 export * from './runner-context';
-export * as Types from './types';

@@ -9,9 +9,9 @@ Rules:
 
 scope(name, runner) = Start a new subscope
 fetch({ 'parent.context': 0, 'something': true }) = fetch multiple keys
-fetch('parent.context', 0) = fetch a single key
+fetch('parent.context', 0) = fetch a solo key
 store({ something: true, derpy: 'world' }) = store multiple keys on current context
-store('something', true) = store single key on current context
+store('something', true) = store solo key on current context
 
 ```javascript
 import Path from 'node:path';

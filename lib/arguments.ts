@@ -10,6 +10,10 @@ export class Arguments {
   declare private _consumed: Array<boolean>;
   declare private _currentIndex: number;
 
+  get args(): Array<string> {
+    return this._args.slice();
+  }
+
   get currentIndex(): number {
     return this._currentIndex;
   }
@@ -22,7 +26,7 @@ export class Arguments {
 
   get(_index?: number): string | undefined {
     let index = (_index == null) ? this.currentIndex : _index;
-    if (index > this._args.length)
+    if (index < 0 || index > this._args.length)
       return;
 
     return this._args[ index ];
@@ -30,7 +34,7 @@ export class Arguments {
 
   consume(_index?: number): string | undefined {
     let index = (_index == null) ? this.currentIndex : _index;
-    if (index > this._args.length)
+    if (index < 0 || index > this._args.length)
       return;
 
     if (this._consumed[ index ])
@@ -40,7 +44,7 @@ export class Arguments {
     this._consumed[ index ] = true;
 
     if (_index == null || _index === this._currentIndex) {
-      this._currentIndex = this._consumed.indexOf(true, this._currentIndex);
+      this._currentIndex = this._consumed.indexOf(false, this._currentIndex);
       if (this._currentIndex < 0)
         this._currentIndex = this._args.length;
     }
@@ -49,7 +53,7 @@ export class Arguments {
   }
 
   unconsume(index: number): string | undefined {
-    if (index > this._args.length)
+    if (index < 0 || index > this._args.length)
       return;
 
     this._consumed[ index ] = false;
@@ -60,10 +64,10 @@ export class Arguments {
     return this.get(index);
   }
 
-  slice(start: number, end: number): Arguments {
+  slice(...args: Array<number>): Arguments {
     return new Arguments(
-      this._args.slice(start, end),
-      this._consumed.slice(start, end),
+      this._args.slice(...args),
+      this._consumed.slice(...args),
     );
   }
 

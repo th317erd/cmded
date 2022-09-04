@@ -3,16 +3,40 @@ import { CMDed, RunnerContext, RunnerResult, Types } from '../';
 
 describe('BOOLEAN', () => {
   const booleanHandler = ({ $ }: RunnerContext) => {
-    return $('--enable', Types.BOOLEAN);
+    return $('--enable', Types.BOOLEAN());
   };
 
   const multiRunner = ({ $, hasMatches }: RunnerContext): RunnerResult => {
-    $('--enable', Types.BOOLEAN);
-    $('--test', Types.BOOLEAN);
-    $('--hello', Types.BOOLEAN);
+    $('--enable', Types.BOOLEAN());
+    $('--test', Types.BOOLEAN());
+    $('--hello', Types.BOOLEAN());
 
     return hasMatches();
   };
+
+  test('can parse and validate argument', () => {
+    const validationRunner = ({ $ }: RunnerContext) => {
+      return $('--enable', Types.BOOLEAN({
+        validate: (value: any) => {
+          if (!value)
+            return false;
+
+          return true;
+        },
+      }));
+    };
+
+    let result = CMDed(validationRunner, { argv: [ '--enable=false' ] });
+    expect(result).toEqual(undefined);
+
+    result = CMDed(validationRunner, { argv: [ '--enable' ] });
+    expect(result).toEqual({ 'enable': true });
+  });
+
+  test('should work with async runner', async () => {
+    let result = await CMDed(async (context: RunnerContext) => booleanHandler(context), { argv: [ '--enable' ] });
+    expect(result).toEqual({ 'enable': true });
+  });
 
   test('can parse standalone boolean flags', () => {
     let result = CMDed(booleanHandler, { argv: [ '--enable' ] });
