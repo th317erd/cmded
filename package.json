@@ -2,7 +2,7 @@
   "name": "cmded",
   "description": "CMDed is a command line argument parser made for humans",
   "version": "1.0.0",
-  "main": "lib/index.ts",
+  "main": "lib/index",
   "directories": {
     "lib": "lib"
   },
