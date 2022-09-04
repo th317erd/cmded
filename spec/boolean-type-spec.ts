@@ -26,7 +26,7 @@ describe('BOOLEAN', () => {
       }));
     };
 
-    let result = CMDed(validationRunner, { argv: [ '--enable=false' ] });
+    let result = CMDed(validationRunner, { argv: [ '--enable=false' ], showHelp: jest.fn() });
     expect(result).toEqual(undefined);
 
     result = CMDed(validationRunner, { argv: [ '--enable' ] });

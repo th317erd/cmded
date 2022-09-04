@@ -34,12 +34,12 @@ export function BYTES(options?: GenericRunnerOptions): Runner {
     if (!size)
       return false;
 
-    let value = parseInt(size, 10);
+    let value = parseFloat(size);
     if (!isFinite(value))
       return false;
 
     let scalarN: number = SCALAR_MAP[ scalar ] || 1;
-    value *= scalarN;
+    value = Math.round(value * scalarN);
 
     if (options && typeof options.validate === 'function') {
       let result = options.validate(value, arguments[ 0 ]);

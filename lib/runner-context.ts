@@ -299,4 +299,8 @@ export class RunnerContext {
   hasMatches = (): boolean => {
     return (this.matchCount > 0);
   }
+
+  exit = (statusCode: number): void => {
+    process.exit(statusCode);
+  }
 }

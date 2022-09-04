@@ -140,4 +140,23 @@ describe('Arguments', () => {
       expect(args.currentIndex).toEqual(0);
     });
   });
+
+  describe('getConsumed', () => {
+    test('should be able to get consumed arguments', () => {
+      expect(args.consume(0)).toEqual('test1');
+      expect(args.getConsumed()).toEqual([ 'test1' ]);
+      expect(args.consume(1)).toEqual('test2');
+      expect(args.getConsumed()).toEqual([ 'test1', 'test2' ]);
+    });
+  });
+
+  describe('getUnconsumed', () => {
+    test('should be able to get unconsumed arguments', () => {
+      expect(args.getUnconsumed()).toEqual([ 'test1', 'test2' ]);
+      expect(args.consume(0)).toEqual('test1');
+      expect(args.getUnconsumed()).toEqual([ 'test2' ]);
+      expect(args.consume(1)).toEqual('test2');
+      expect(args.getUnconsumed()).toEqual([]);
+    });
+  });
 });

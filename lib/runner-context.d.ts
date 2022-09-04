@@ -38,4 +38,5 @@ export declare class RunnerContext {
     get $(): (_pattern: string | RegExp | PatternMatcher | null | undefined, runner: Runner, options?: GenericObject) => Promise<boolean> | boolean;
     showHelp: (_path?: string) => void;
     hasMatches: () => boolean;
+    exit: (statusCode: number) => void;
 }

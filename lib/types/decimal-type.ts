@@ -5,10 +5,10 @@ import { GenericRunnerOptions } from "./common";
 export function DECIMAL(options?: GenericRunnerOptions): Runner {
   const runner = function ({ formatName, store }: RunnerContext, parsedResult: GenericObject): boolean {
     let name = formatName(parsedResult.name);
-    if (!(/^[+-]?(\d*.\d+|\d+.\d*)(e[+-]\d+)?$/).test(parsedResult.value))
+    if (!(/^[+-]?(\d*.\d+|\d+.\d*)(e[+-]?\d+)?$/).test(parsedResult.value))
       return false;
 
-    let value = Math.round(parseFloat(parsedResult.value));
+    let value = parseFloat(parsedResult.value);
     if (!isFinite(value))
       return false;
 
