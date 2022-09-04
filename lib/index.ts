@@ -7,10 +7,6 @@ import { defaultFormatter } from './default-formatter';
 
 export declare type FinalResult = Promise<GenericObject | undefined> | GenericObject | undefined;
 
-
-
-
-
 export function CMDed(runner: Runner, _options?: RootOptions): FinalResult {
   let rootOptions: RootOptions = {
     strict: false,
