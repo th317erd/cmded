@@ -91,14 +91,14 @@ describe('Arguments', () => {
     test('should be able to slice arguments', () => {
       expect(args.args).toEqual([ 'test1', 'test2' ]);
       expect(args.slice(-1).args).toEqual([ 'test2' ]);
-      expect(args.slice(-1).getConsumed()).toEqual([]);
+      expect(args.slice(-1).getConsumedIndexes()).toEqual([]);
 
       expect(args.slice(0, 1).args).toEqual([ 'test1' ]);
       expect(args.slice(0, -1).args).toEqual([ 'test1' ]);
 
       expect(args.consume(1)).toEqual('test2');
       expect(args.slice(-1).args).toEqual([ 'test2' ]);
-      expect(args.slice(-1).getConsumed()).toEqual([ 0 ]);
+      expect(args.slice(-1).getConsumedIndexes()).toEqual([ 0 ]);
     });
   });
 
@@ -106,11 +106,11 @@ describe('Arguments', () => {
     test('should be able to reset consumed arguments', () => {
       expect(args.consume(0)).toEqual('test1');
       expect(args.consume(1)).toEqual('test2');
-      expect(args.getConsumed()).toEqual([ 0, 1 ]);
+      expect(args.getConsumedIndexes()).toEqual([ 0, 1 ]);
       expect(args.currentIndex).toEqual(2);
 
       args.resetConsumed();
-      expect(args.getConsumed()).toEqual([]);
+      expect(args.getConsumedIndexes()).toEqual([]);
       expect(args.currentIndex).toEqual(2);
     });
   });
@@ -119,11 +119,11 @@ describe('Arguments', () => {
     test('should be able to reset currentIndex', () => {
       expect(args.consume(0)).toEqual('test1');
       expect(args.consume(1)).toEqual('test2');
-      expect(args.getConsumed()).toEqual([ 0, 1 ]);
+      expect(args.getConsumedIndexes()).toEqual([ 0, 1 ]);
       expect(args.currentIndex).toEqual(2);
 
       args.resetIndex();
-      expect(args.getConsumed()).toEqual([ 0, 1 ]);
+      expect(args.getConsumedIndexes()).toEqual([ 0, 1 ]);
       expect(args.currentIndex).toEqual(0);
     });
   });
@@ -132,11 +132,11 @@ describe('Arguments', () => {
     test('should be able to reset everything', () => {
       expect(args.consume(0)).toEqual('test1');
       expect(args.consume(1)).toEqual('test2');
-      expect(args.getConsumed()).toEqual([ 0, 1 ]);
+      expect(args.getConsumedIndexes()).toEqual([ 0, 1 ]);
       expect(args.currentIndex).toEqual(2);
 
       args.reset();
-      expect(args.getConsumed()).toEqual([]);
+      expect(args.getConsumedIndexes()).toEqual([]);
       expect(args.currentIndex).toEqual(0);
     });
   });

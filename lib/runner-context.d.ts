@@ -36,6 +36,6 @@ export declare class RunnerContext {
     markConsumed: (_indexes: Array<number> | number) => void;
     match: (_pattern: string | RegExp | PatternMatcher | null | undefined, runner: Runner, options?: GenericObject) => Promise<boolean> | boolean;
     get $(): (_pattern: string | RegExp | PatternMatcher | null | undefined, runner: Runner, options?: GenericObject) => Promise<boolean> | boolean;
-    showHelp: () => void;
+    showHelp: (_path?: string) => void;
     hasMatches: () => boolean;
 }

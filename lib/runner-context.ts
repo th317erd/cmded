@@ -1,6 +1,7 @@
 import Nife from 'nife';
 import { Arguments } from "./arguments";
 import { GenericObject } from './common';
+import { showHelp } from './help';
 import { RootOptions } from "./root-options";
 
 export declare type RunnerResult = Promise<boolean> | boolean;
@@ -280,17 +281,19 @@ export class RunnerContext {
     return this.match;
   }
 
-  showHelp = () => {
+  showHelp = (_path?: string) => {
     let showHelpFunc = this.rootOptions.showHelp;
-    let help = this.rootOptions.help;
-    let subHelp = Nife.get(help, this.runnerPath, help);
+    let help = this.rootOptions.help || {};
+    let path = (_path != null) ? _path : this.runnerPath;
+
+    let subHelp = (path) ? Nife.get(help, path, help) : help;
     if (showHelpFunc) {
-      showHelpFunc(subHelp, help, this.runnerPath);
+      showHelpFunc(subHelp, help, path, this);
       return;
     }
 
     if (subHelp)
-      console.log(subHelp);
+      showHelp(subHelp, help, path, this);
   };
 
   hasMatches = (): boolean => {

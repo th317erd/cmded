@@ -5,6 +5,7 @@ import { Arguments } from './arguments';
 import { defaultParser } from './default-parser';
 import { defaultFormatter } from './default-formatter';
 import { GenericObject } from './common';
+import { showHelp } from './help';
 
 export declare type FinalResult = Promise<GenericObject | undefined> | GenericObject | undefined;
 
@@ -14,6 +15,7 @@ export function CMDed(runner: Runner, _options?: RootOptions): FinalResult {
     argv: process.argv.slice(2),
     parser: defaultParser,
     formatter: defaultFormatter,
+    helpArgPattern: '--help',
     ...(_options || {}),
   };
 
@@ -43,7 +45,7 @@ export function CMDed(runner: Runner, _options?: RootOptions): FinalResult {
 
       return;
     } else {
-      let unconsumed = runnerContext.args.getUnconsumed();
+      let unconsumed = runnerContext.args.getUnconsumedIndexes();
       if (rootOptions.strict && unconsumed.length > 0) {
         runnerContext.showHelp();
 
@@ -72,6 +74,22 @@ export function CMDed(runner: Runner, _options?: RootOptions): FinalResult {
       return finalContext;
     }
   };
+
+  // Help runner
+  if (rootOptions.helpArgPattern && rootOptions.help) {
+    let result = runnerContext.match(rootOptions.helpArgPattern, () => {
+      let unconsumedArgs = runnerContext.args.getUnconsumed();
+      if (Nife.isEmpty(unconsumedArgs))
+        runnerContext.showHelp('');
+      else
+        runnerContext.showHelp(unconsumedArgs.join('.'));
+
+      return true;
+    }, { solo: true });
+
+    if (result)
+      return;
+  }
 
   let result = runner(runnerContext, {});
   if (Nife.instanceOf(result, 'promise')) {

@@ -161,7 +161,7 @@ describe('RunnerContext', () => {
         notConsumed: [],
       });
 
-      expect(runnerContext.args.getUnconsumed()).toEqual([ 1 ]);
+      expect(runnerContext.args.getUnconsumedIndexes()).toEqual([ 1 ]);
     });
 
     test('should be able to parse arguments (not consuming)', () => {
@@ -180,7 +180,7 @@ describe('RunnerContext', () => {
         notConsumed: [ 0 ],
       });
 
-      expect(runnerContext.args.getUnconsumed()).toEqual([ 0, 1 ]);
+      expect(runnerContext.args.getUnconsumedIndexes()).toEqual([ 0, 1 ]);
     });
   });
 
@@ -362,15 +362,15 @@ describe('RunnerContext', () => {
 
   describe('showHelp', () => {
     test('should call console.log', () => {
-      jest.spyOn(console, 'log').mockImplementation(() => { });
+      let mock = jest.spyOn(console, 'log').mockImplementation(() => { });
 
       runnerContext.showHelp();
 
-      expect(console.log).toHaveBeenCalledWith({ dude: 'test', subHelp: { hello: 'world' } });
+      expect(mock.mock.calls[ 0 ][ 0 ]).toMatch(/a path \[options\]/);
     });
 
     test('should call console.log with correct help when runnerPath is correct', () => {
-      jest.spyOn(console, 'log').mockImplementation(() => { });
+      let mock = jest.spyOn(console, 'log').mockImplementation(() => { });
 
       let newContext = runnerContext.clone({
         runnerPath: 'subHelp',
@@ -378,7 +378,7 @@ describe('RunnerContext', () => {
 
       newContext.showHelp();
 
-      expect(console.log).toHaveBeenCalledWith({ hello: 'world' });
+      expect(mock.mock.calls[ 0 ][ 0 ]).toMatch(/subHelp \[options\]/);
     });
   });
 

@@ -19,7 +19,9 @@ export declare class Arguments {
     resetIndex(): Arguments;
     reset(): this;
     iterate(callback: (context: ArgumentsIterateContext) => void, includeConsumed?: boolean): void;
-    getConsumed(): number[];
-    getUnconsumed(): number[];
+    getConsumedIndexes(): number[];
+    getConsumed(): (string | undefined)[];
+    getUnconsumedIndexes(): number[];
+    getUnconsumed(): (string | undefined)[];
 }
 export {};

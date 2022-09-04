@@ -109,3 +109,4 @@ coverage
 .vscode
 tsconfig.json
 **/external/nife.d.ts
+examples

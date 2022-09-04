@@ -109,7 +109,7 @@ export class Arguments {
     }
   }
 
-  getConsumed() {
+  getConsumedIndexes() {
     let consumed = this._consumed;
     let consumedIndexes = [];
 
@@ -121,7 +121,19 @@ export class Arguments {
     return consumedIndexes;
   }
 
-  getUnconsumed() {
+  getConsumed() {
+    let consumed = this._consumed;
+    let consumedArgs = [];
+
+    for (let i = 0, il = consumed.length; i < il; i++) {
+      if (consumed[ i ])
+        consumedArgs.push(this.get(i));
+    }
+
+    return consumedArgs;
+  }
+
+  getUnconsumedIndexes() {
     let consumed = this._consumed;
     let unconsumedIndexes = [];
 
@@ -131,5 +143,17 @@ export class Arguments {
     }
 
     return unconsumedIndexes;
+  }
+
+  getUnconsumed() {
+    let consumed = this._consumed;
+    let unconsumedArgs = [];
+
+    for (let i = 0, il = consumed.length; i < il; i++) {
+      if (!consumed[ i ])
+        unconsumedArgs.push(this.get(i));
+    }
+
+    return unconsumedArgs;
   }
 }

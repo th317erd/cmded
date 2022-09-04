@@ -13,7 +13,7 @@
     ],
     // "typeRoots": [],               /* Specify multiple folders that act like './node_modules/@types'. */
     "types": [                        /* Specify type package names to be included without being referenced in a source file. */
-      "node"
+      "node",
     ],
 
     /* JavaScript Support */
@@ -39,9 +39,13 @@
     /* Type Checking */
     "strict": true,                                      /* Enable all strict type-checking options. */
   },
+  "include": [
+    "./lib"
+  ],
   "exclude": [
     "./coverage",
     "./spec",
+    "./examples",
     "./jest.config.ts"
   ],
 }

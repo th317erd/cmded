@@ -9,6 +9,8 @@ declare module 'nife' {
   }
 
   namespace Nife {
+    function isNotEmpty(value: any): boolean;
+    function isEmpty(value: any): boolean;
     function extend(objOrFlags: GenericObject | Array<any> | boolean | number, ...args: Array<GenericObject>): GenericObject | Array<any>;
     function toArray<T>(value: T): Array<T>;
     function get(context: GenericObject | Array<any> | null | undefined, path: string, defaultValue?: any): any;
