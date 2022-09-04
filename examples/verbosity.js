@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const { CMDed } = require('../');
 
 const help = {

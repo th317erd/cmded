@@ -112,8 +112,9 @@ export function CMDed(runner: Runner, _options?: RootOptions): FinalResult {
 
 export * as Types from './types';
 export * from './arguments';
+export * from './common';
 export * from './default-formatter';
 export * from './default-parser';
+export * from './help';
 export * from './root-options';
 export * from './runner-context';
-export * from './common';

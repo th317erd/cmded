@@ -151,7 +151,7 @@ export class RunnerContext {
     if (!formatter)
       throw new Error('RunnerContext:formatName: "formatter" not defined, but is required.');
 
-    return formatter(this, name);
+    return formatter(name, this);
   }
 
   markConsumed = (_indexes: Array<number> | number): void => {

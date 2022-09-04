@@ -9,6 +9,7 @@ declare module 'nife' {
   }
 
   namespace Nife {
+    function snakeCaseToCamelCase(value: string): string;
     function isNotEmpty(value: any): boolean;
     function isEmpty(value: any): boolean;
     function extend(objOrFlags: GenericObject | Array<any> | boolean | number, ...args: Array<GenericObject>): GenericObject | Array<any>;

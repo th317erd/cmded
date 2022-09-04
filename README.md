@@ -1,51 +1,32 @@
 # cmded
 
-CMDed is a command line argument parser made for humans
+CMDed is a command line argument parser made for humans.
 
-Rules:
-  1. Captures will consume (and mark as consumed) the arguments they use
-  2. Runners will return `true` if they match at least once, or `false` if they don't
-  3. Runners can be asynchronous, but they must always return `true` or `false`
+CMDed makes it easy to build CLI tools, or any command that needs arguments. Unlike other command argument parsers, CMDed aims at keeping the interface straight forward and simple, while also remaining very simple (and small) in nature.
 
-scope(name, runner) = Start a new subscope
-fetch({ 'parent.context': 0, 'something': true }) = fetch multiple keys
-fetch('parent.context', 0) = fetch a solo key
-store({ something: true, derpy: 'world' }) = store multiple keys on current context
-store('something', true) = store solo key on current context
+The core concept that makes CMDed works is "consuming" arguments combined with argument "scanning".
+
+Any arguments that are validly parsed against a matching pattern are "consumed". Being consumed, they are then ignored by further processing. This makes parsing complex combinations straight forward and simple.
+
+Take for example the following command:
+
+`./my-echo hello world --use-system-echo --duplicate`
+
+All arguments are scanned (in the order you specify) and marked as "consumed". So, when specifying the "boolean" arguments `--use-system-echo` and `--duplicate` in our code first, the arguments would be scanned, and the "boolean" arguments would be marked as "consumed" (visualized with `.....`):
+
+`./my-echo hello world ................. ...........`
+
+Now, inside your argument "context" there are the values `{ 'useEcho': true, 'duplicate': true }`, and then the remaining arguments are up for parsing next. This makes it straight forward for the parser to figure out what is going on, even if the argument order is changed. For example, if we place the "boolean" flags first, nothing changes:
+
+`./my-echo --duplicate --use-system-echo hello world`
+
+...when looking at the consumed arguments:
+
+`./my-echo ........... ................. hello world`
+
+In this case, we want all remaining arguments to be echoed to the user. CMDed has a special context property named `_remaining` which are all remaining "unconsumed" arguments after parsing has completed.
+
+With all of this in mind, we can create the above example using CMDed:
 
 ```javascript
-import Path from 'node:path';
-import FileSystem from 'node:fs/promise';
-import { CMDed, ShowHelp, Types } from 'cmded';
-
-CMDed(({ $ }) => {
-  scope('subContext', () => {
-    $(() => {
-
-    })
-  });
-
-  $(
-    '--help',
-    ShowHelp,
-    "Show this help",
-  ); // Direct match
-
-  $('-h',     '--help'); // Alias
-
-  $('-v',     ({ fetch, store }) => { // Runner
-    let { verbosity } = fetch({ verbosity: 0 });
-    store({ verbosity: verbosity + 1 });
-  });
-
-  $('required', ({ $, store }) => {
-    $('--subArg', Types.Boolean) || store({ subArg: true });
-  }) || ShowHelp;
-}, {
-  strict: true,
-  argv:   process.argv.slice(2),
-  parser: (arg) => {
-
-  },
-});
 ```
