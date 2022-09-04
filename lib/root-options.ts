@@ -1,3 +1,4 @@
+import { GenericObject } from "./common";
 import { RunnerContext } from "./runner-context";
 
 export declare interface HelpInterface {

@@ -4,6 +4,10 @@ declare module 'nife-external' {
 }
 
 declare module 'nife' {
+  interface GenericObject {
+    [ key: string ]: any;
+  }
+
   namespace Nife {
     function extend(objOrFlags: GenericObject | Array<any> | boolean | number, ...args: Array<GenericObject>): GenericObject | Array<any>;
     function toArray<T>(value: T): Array<T>;

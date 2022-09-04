@@ -1,5 +1,5 @@
 import { describe, expect, test, beforeEach, jest } from '@jest/globals';
-import { Arguments, defaultParser, defaultFormatter, RunnerContext, RunnerResult, Types } from '../lib';
+import { Arguments, defaultParser, defaultFormatter, RunnerContext, RunnerResult, Types, GenericObject } from '../lib';
 
 describe('RunnerContext', () => {
   let runnerContext: RunnerContext;

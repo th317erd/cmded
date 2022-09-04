@@ -4,6 +4,7 @@ import { RootOptions } from './root-options';
 import { Arguments } from './arguments';
 import { defaultParser } from './default-parser';
 import { defaultFormatter } from './default-formatter';
+import { GenericObject } from './common';
 
 export declare type FinalResult = Promise<GenericObject | undefined> | GenericObject | undefined;
 
@@ -97,3 +98,4 @@ export * from './default-formatter';
 export * from './default-parser';
 export * from './root-options';
 export * from './runner-context';
+export * from './common';

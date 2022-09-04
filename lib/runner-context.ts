@@ -1,5 +1,6 @@
 import Nife from 'nife';
 import { Arguments } from "./arguments";
+import { GenericObject } from './common';
 import { RootOptions } from "./root-options";
 
 export declare type RunnerResult = Promise<boolean> | boolean;

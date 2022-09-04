@@ -1,3 +1,4 @@
+import { GenericObject } from "../common";
 import { Runner, RunnerContext } from "../runner-context";
 import { GenericRunnerOptions } from "./common";
 

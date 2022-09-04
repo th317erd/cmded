@@ -1,3 +1,4 @@
+import { GenericObject } from "./common";
 import { RunnerContext } from "./runner-context";
 
 export function defaultParser(context: RunnerContext, options: GenericObject = {}, _index: number | undefined): GenericObject | undefined {

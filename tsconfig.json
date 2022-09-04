@@ -40,6 +40,8 @@
     "strict": true,                                      /* Enable all strict type-checking options. */
   },
   "exclude": [
-    "./coverage"
+    "./coverage",
+    "./spec",
+    "./jest.config.ts"
   ],
 }
