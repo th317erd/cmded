@@ -342,6 +342,10 @@ Specify a parser for parsing all arguments. By default, this is the `defaultPars
 
 The default formatter to apply to argument `name`s to convert them into "user context" key names. For example, the argument named `--use-system-echo` will be converted into camel case `useSystemEcho`. You can provide any formatter you want to format the name of your arguments and turn them in to user context key names.
 
+### `showHelp` = `undefined`
+
+A custom `--help` output function that will write the command's help to stdout. This is a complete replacement of the built-in `showHelp` method. If you supply this, you must output all the help for your command. However, the `help` object will be provided to this call, so you will have something to work with to output the help.
+
 #### `context` = `{}`
 
 The default "user context" to supply. This can be any object... but it should be an object.
@@ -349,3 +353,41 @@ The default "user context" to supply. This can be any object... but it should be
 #### `help` = `undefined`
 
 The help to provide for your command. This should be an object, where each key is an argument pattern, and each value a description of what that argument does.
+
+*Note: See the [Help](https://github.com/th317erd/cmded#help) section and check out the [examples](https://github.com/th317erd/cmded/tree/main/examples) for more information.*
+
+#### `helpArgPattern` = `'--help'`
+
+The pattern that will trigger the internal help path for the command. This can be anything you want it to be. By default it is `--help`.
+
+## Types
+
+CMDed comes with the following built-in types:
+
+### `Types.BOOLEAN` (solo = only consumes at most one argument)
+
+A boolean type. This is a `solo` type by default, meaning it won't ever parse more than a single argument. However, it is valid to use the `name=value` syntax for your arguments, allowing you to set the boolean to any value. By default, a "no value" argument will be assumed to be `true`, such as `--enabled`. You can specifically set the value like so: `--enabled=false`, or `--enabled=0`, or `--enabled=true`, or `--enabled=1`.
+
+### `Types.INTEGER` (NOT solo = consumes at most two arguments)
+
+An integer type. This will parse a non-decimal, non-real number... and "integer". It will fail if there is a decimal place in the number provided. It does however support exponential notation, and can be either negative or positive. By default this is **not** a `solo` command, so it *can* parse up to two arguments. It will however only parse a single argument if the "name=value" format is used for the argument. Examples: `--size=10`, or `--size=10e4`, or `--size=-5`, or `--size 10`, or `--size 10e4`, or `--size -5`.
+
+### `Types.DECIMAL` (NOT solo = consumes at most two arguments)
+
+An "floating point" type. This will parse a "real" number... and "decimal" floating point number. It supports exponential notation, and can be either negative or positive. By default this is **not** a `solo` command, so it *can* parse up to two arguments. It will however only parse a single argument if the "name=value" format is used for the argument. Examples: `--size=10.55`, or `--size=10.5e4`, or `--size=-5.123`, or `--size 10.55`, or `--size 10.5e4`, or `--size -5.123`.
+
+### `Types.HEX` (NOT solo = consumes at most two arguments)
+
+An hex type. This will parse an integer value in hexadecimal notation. The hex value can be either negative or positive. By default this is **not** a `solo` command, so it *can* parse up to two arguments. It will however only parse a single argument if the "name=value" format is used for the argument. Examples: `--size=0xF`, or `--size=-0xAF`, or `--size 0xF`, or `--size -0xAF`.
+
+### `Types.OCTAL` (NOT solo = consumes at most two arguments)
+
+An octal type. This will parse an integer value in octal notation. The octal value can be either negative or positive. By default this is **not** a `solo` command, so it *can* parse up to two arguments. It will however only parse a single argument if the "name=value" format is used for the argument. Examples: `--size=0o777`, or `--size=-66`, or `--size 777`, or `--size -0o66`.
+
+### `Types.BYTES` (NOT solo = consumes at most two arguments)
+
+A size in bytes. This will parse an a size in the number of bytes. This value must be positive, or the match will fail. You can use the `b`, `k`, `kb`, `m`, `mb`, `g`, `gb`, `t`, and `tb` postfixes to specify the absolute size in bytes (case insensitive). Floating point or decimal values can be used. For example, `1.5mb` is valid. By default this is **not** a `solo` command, so it *can* parse up to two arguments. It will however only parse a single argument if the "name=value" format is used for the argument. Examples: `--bytes=10mb`, or `--bytes=32kb`, or `--bytes 1gb`, or `--bytes 1.5tb`.
+
+### `Types.STRING` (NOT solo = consumes at most two arguments)
+
+A string type. This will parse any string value. By default this is **not** a `solo` command, so it *can* parse up to two arguments. It will however only parse a single argument if the "name=value" format is used for the argument. Examples: `--name=Bob`, or `--name Bob`.
