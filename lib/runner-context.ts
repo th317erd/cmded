@@ -23,6 +23,44 @@ export interface RunnerContextOptions {
 /// A RunnerContext instance is passed as the first argument
 /// to all Runners. It assists with argument pattern matching,
 /// exiting the program, showing the help, parsing, etc...
+///
+/// Properties:
+///   rootOptions: RootOptions
+///     The root options provided to CMDed... See <see>RootOptions</see>.
+///   args: Arguments
+///     The <see>Arguments</see> provided to CMDed.
+///     By default the arguments will be `process.argv.slice(2)`.
+///     The <see>Arguments</see> interface is a simple wrapper
+///     around the provided arguments that tracks which arguments
+///     have been "consumed".
+///   context: object
+///     Get the "user context" where parsed
+///     argument values are being collected.
+///     This is where data is stored or fetched
+///     when you make a call to <see>RunnerContext.store</see>
+///     or <see>RunnerContext.fetch</see>.
+///   runnerPath: string
+///     The current Runner path. This is
+///     updated every time a Runner is invoked.
+///     It will be added onto, using the name
+///     of the Runner. For example, if you have
+///     an argument matcher matching against
+///     `--name`, and this is the first argument
+///     at the "root" level, then this path will
+///     be `"name"`. If however you have a sub command
+///     named `sub-commend`, and its Runner is invoked,
+///     and then inside the sub-command Runner you parse
+///     the argument `--name`, then the path inside the
+///     "name" Runner inside the sub-command would be
+///     "sub-command.name".
+///
+///     The entire idea behind `runnerPath` is only to
+///     assist CMDed (or the user) in finding the correct and
+///     current "path" to show the proper `help` for
+///     the given command or sub-command being parsed.
+///     For example, if you invoked <see>RunnerContext.showHelp</see>
+///     inside the `sub-command` Runner, then the help system would
+///     look for `help['sub-command']` to display the help.
 export class RunnerContext {
   declare private options: RunnerContextOptions;
   declare private matchCount: number;
@@ -45,50 +83,18 @@ export class RunnerContext {
     this.matchCount = 0;
   }
 
-  /// The <see>RootOptions</see> provided to CMDed
   get rootOptions(): RootOptions {
     return this.options.rootOptions;
   }
 
-  /// The <see>Arguments</see> provided to CMDed.
-  /// By default the arguments will be `process.argv.slice(2)`.
-  /// The <see>Arguments</see> interface is a simple wrapper
-  /// around the provided arguments that tracks which arguments
-  /// have been "consumed".
   get args(): Arguments {
     return this.options.args;
   }
 
-  /// Get the "user context" where parsed
-  /// argument values are being collected.
-  /// This is where data is stored or fetched
-  /// when you make a call to <see>RunnerContext.store</see>
-  /// or <see>RunnerContext.fetch</see>.
   get context(): GenericObject {
     return this.options.context;
   }
 
-  /// The current Runner path. This is
-  /// updated every time a Runner is invoked.
-  /// It will be added onto, using the name
-  /// of the Runner. For example, if you have
-  /// an argument matcher matching against
-  /// `--name`, and this is the first argument
-  /// at the "root" level, then this path will
-  /// be `"name"`. If however you have a sub command
-  /// named `sub-commend`, and its Runner is invoked,
-  /// and then inside the sub-command Runner you parse
-  /// the argument `--name`, then the path inside the
-  /// "name" Runner inside the sub-command would be
-  /// "sub-command.name".
-  ///
-  /// The entire idea behind `runnerPath` is only to
-  /// assist CMDed (or the user) in finding the correct and
-  /// current "path" to show the proper `help` for
-  /// the given command or sub-command being parsed.
-  /// For example, if you invoked <see>RunnerContext.showHelp</see>
-  /// inside the `sub-command` Runner, then the help system would
-  /// look for `help['sub-command']` to display the help.
   get runnerPath(): string {
     return this.options.runnerPath;
   }
@@ -99,6 +105,7 @@ export class RunnerContext {
   /// Return: RunnerContext
   ///   A new instance of RunnerContext, cloned from
   ///   the instance this method was called upon.
+  ///
   /// Arguments:
   ///   options: RunnerContextOptions
   ///     Any optional options to override. None need to be supplied.
@@ -136,13 +143,14 @@ export class RunnerContext {
   /// value is a "default value" if the specified key is not found,
   /// or whose value results in `undefined`. For example:
   /// `let { value1, value2 } = fetch({ value1: 'defaultFallback', value2: defaultValue })`.
-  /// You can also specify "deep" keys using this call pattern, for
-  /// example: `let { test } = fetch({ 'some.deep.key.test': defaultValue })`.
+  /// You can also specify "deep" keys using this call pattern, for example:
+  /// `let { test } = fetch({ 'some.deep.key.test': defaultValue })`.
   /// When using the "deep" pattern, only the "last part" of the path is
   /// returned as a key. In this case, you can see that the resulting key
   /// is `test`, which is the final part of `some.deep.key.test`.
   ///
   /// Return: any
+  ///
   /// Arguments:
   ///   scope: object | string
   ///     The "scope" to fetch. This can be a string to fetch a single property
@@ -210,12 +218,13 @@ export class RunnerContext {
   /// property key is the key name to store, and each property
   /// value is the value to store. For example:
   /// `store({ value1: 'hello', value2: 'world' })`.
-  /// You can also specify "deep" objects using this call pattern, for
-  /// example: `fetch({ some: { deep: { key: value } } })`.
+  /// You can also specify "deep" objects using this call pattern, for example:
+  /// `fetch({ some: { deep: { key: value } } })`.
   /// This type of call will always result in a "deep merge" into
   /// the underlying "user context".
   ///
   /// Return: void
+  ///
   /// Arguments:
   ///   scope: object | string
   ///     The "scope" to set. This can be a string to set a single property
@@ -269,6 +278,7 @@ export class RunnerContext {
   ///   be returned if any of your pattern matchers succeeded. However,
   ///   you might always want to return `true` if all your argument
   ///   matchers are optional. Return `false` only if there was a failure.
+  ///
   /// Arguments:
   ///   name: string
   ///     The name to give the new scope.
@@ -323,8 +333,8 @@ export class RunnerContext {
   /// This is because the arguments are being "scanned", and
   /// it doesn't want to mark arguments as "consumed" until
   /// it actually finds a matching pattern. For this reason, the
-  /// `defaultParser` also returns in the "parser results" two
-  /// properties: `{ indexes: Array<number>, notConsumed: array<number> }`.
+  /// `defaultParser` also returns in the "parser results" two properties:
+  /// `{ indexes: Array<number>, notConsumed: array<number> }`.
   /// If the parser returns a falsy value, then that is considered a
   /// non-match for the argument being tested, and argument scanning continues.
   /// If however the parser returns a truthy value, then this is considered
@@ -339,6 +349,7 @@ export class RunnerContext {
   /// application.
   ///
   /// Return: any
+  ///
   /// Arguments:
   ///   options: object
   ///     Any options you wish to provide to your parser. Internally,
@@ -367,6 +378,7 @@ export class RunnerContext {
   /// Return: string
   ///   The formatted argument name. By default, this will format
   ///   an argument name into camelCase.
+  ///
   /// Arguments:
   ///   name: string
   ///     The argument name to format into a "user context" property name.
@@ -387,7 +399,9 @@ export class RunnerContext {
   ///   any arguments. `args.consume` only accepts a single
   ///   index however, so if you want to consume multiple
   ///   arguments at the same time you can use this method instead.
+  ///
   /// Return: void
+  ///
   /// Arguments:
   ///   indexes: Array<number> | number
   ///     Argument indexes to mark as "consumed".
@@ -454,14 +468,15 @@ export class RunnerContext {
   ///   Return a `Promise` from your Runner if you have asynchronous code.
   ///   Otherwise, simply return `true` if your runner succeeded, or `false`
   ///   if not.
+  ///
   /// Arguments:
   ///   pattern: string | RegExp | Function(context: RunnerContext, options: object | undefined, index: number) | null | undefined
   ///     The pattern to match against. This can be a `string` for an exact match, a `RegExp`
   ///     for a pattern match, or a `Function` for a custom parser/matcher. If `null` or `undefined`
   ///     are provided, then CMDed will automatically force `solo` mode, and will demand that a `name`
   ///     be supplied to the Runner options. This can be useful for example if you know what argument
-  ///     you are parsing, and just want to parse it without a name provided at the arguments level, for
-  ///     example: `$(null, Types.INTEGER(), { name: 'myNumber' })`.
+  ///     you are parsing, and just want to parse it without a name provided at the arguments level, for example:
+  //      `$(null, Types.INTEGER(), { name: 'myNumber' })`.
   ///   runner: Runner
   ///     The Runner to invoke upon successful match. The Runner method will be provided the
   ///     "parser results" as the second argument, after those results are passed through the
@@ -610,11 +625,14 @@ export class RunnerContext {
   ///   `showHelp` will not exit the program. You must
   ///    manually shutdown your program, call <see>RunnerContext.exit</see>
   ///    or `process.exit` yourself.
+  ///
   /// Note:
   ///   This deliberately has the same name as the global export `showHelp`,
   ///   because they accomplish the same thing. However, both methods have a
   ///   different signature, so pay attention when calling them.
+  ///
   /// Return: void
+  ///
   /// Arguments:
   ///   path: string
   ///     A "dot notation" path to lookup inside the `help` object

@@ -21,6 +21,7 @@ module.exports = {
     },
   ],
   exclude: [
+    /\.d\.ts$/,
     /node_modules|\/spec\//
   ],
   generatorOptions: {

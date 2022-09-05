@@ -1,3 +1,5 @@
+///! DocScope: CMDed
+
 import Nife from 'nife';
 import { Runner, RunnerContext } from './runner-context';
 import { RootOptions } from './root-options';
@@ -9,7 +11,49 @@ import { showHelp } from './help';
 
 export declare type FinalResult = Promise<GenericObject | undefined> | GenericObject | undefined;
 
-export function CMDed(runner: Runner, _options?: RootOptions): FinalResult {
+/// Invoke command line argument parsing.
+///
+/// The first argument is NOT a Runner, even though it has the signature
+/// of one. This method is simply an entry point to start executing matchers/Runners.
+///
+/// The return value from this method can either be a `Promise<object | undefined>` if
+/// you are running asynchronous code, or a simple `object | undefined` if you have no
+/// asynchronous code. An `undefined` return value means there was a failure in parsing.
+/// At this point, you should show the help via a `showHelp(help)` call, and exit your
+/// application.
+///
+/// Interface:
+///   export declare interface RootOptions {
+///     // If `true`, then CMDed will fail if every argument is not consumed.
+///     strict?: boolean;
+///
+///     // Specify the input arguments, defaults to `process.argv.slice(2)`.
+///     argv?: Array<string> | null;
+///
+///     // Specify a custom parser for all argument parsing.
+///     parser?: (context: RunnerContext, options?: object, index?: number) => object | undefined;
+///
+///     // Specify a "user context" property name formatter.
+///     formatter?: (name: string, context?: RunnerContext) => string;
+///
+///     // Specify a custom "showHelp" method.
+///     showHelp?: (subHelp: HelpInterface, help: HelpInterface, helpPath: string, context: RunnerContext) => void;
+///
+///     // Specify the "help" object for your command.
+///     help?: HelpInterface | null;
+///
+///     // Specify the pattern of the argument that will trigger the help, default is `"--help"`.
+///     helpArgPattern?: string | null;
+///   }
+///
+/// Return: Promise<object | undefined> | boolean | undefined
+///
+/// Arguments:
+///   entryMethod: (context: RunnerContext) => Promise<boolean> | boolean
+///     Specify entry point to start executing matchers and Runners.
+///   options?: RootOptions
+///     Specify `rootOptions` for parsing.
+export function CMDed(entryMethod: Runner, _options?: RootOptions): FinalResult {
   let rootOptions: RootOptions = {
     strict: false,
     argv: process.argv.slice(2),
@@ -91,7 +135,7 @@ export function CMDed(runner: Runner, _options?: RootOptions): FinalResult {
       return;
   }
 
-  let result = runner(runnerContext, {}, {});
+  let result = entryMethod(runnerContext, {}, {});
   if (Nife.instanceOf(result, 'promise')) {
     let promise = result as Promise<boolean>;
 
