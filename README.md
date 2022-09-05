@@ -113,7 +113,7 @@ CMDed calls argument "handlers" Runners. There is a few built-in default Runners
 
 ### Match and $
 
-The `$` dollar sign is an alias for `match`. `match` is the core of CMDed. It will match against the argument patterns specified, in combination with the parser, and will "consume" any matches found. It does so by scanning all the arguments. For example, below we specify a `'--size'` argument. It will scan *all* provided arguments until it finds this match, and once found, it will mark it as "consumed" and call the Runner, passing the parsed results to the Runner as the second argument.
+The `$` dollar sign is an alias for `match`. `match` is the core of CMDed. It will match against the argument patterns specified, in combination with the parser, and will "consume" any matches found. It does so by scanning all the arguments. For example, if we specify a `'--size'` argument, it will scan *all* provided arguments until it finds this match, and once found, it will mark that argument as "consumed", and call the Runner, passing the parsed results to the Runner as the second argument.
 
 There are a number of different ways `match` can be used. First, `match` can simply provided a string for a pattern to match against. If it is provided a string, then the match must be exact.
 
