@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const { CMDed } = require('../');
+const { CMDed, showHelp } = require('../');
 
 const help = {
   '@examples': [
@@ -55,6 +55,7 @@ let args = CMDed(({ $, hasMatches }) => {
 }, { help });
 
 if (!args) {
+  showHelp(help);
   process.exit(1);
 }
 

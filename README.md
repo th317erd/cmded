@@ -306,6 +306,10 @@ By default, the internal "help" request for your command will be triggered with 
 
 *Note: if you want aliases for your `--help` argument, then you can always specify them yourself as Runners that will call `showHelp`, or you can submit a PR or issue request informing the CMDed team that you would like such a feature.*
 
+### Async Runners
+
+Asynchronous runners are supported. All you have to do is use the `async`/`await` syntax everywhere, and away you go! Nothing changes, you just need to `await` on all matchers/runners, `scope` calls, and the call to `CMDed` itself.
+
 ## CMDed
 
 `CMDed` is the main entry point for parsing your arguments. It takes two arguments, an entry point function (this is not a Runner, it is just the entry point to start invoking matchers/Runners), and a `rootOptions` object, specifying the root options for the process.
@@ -370,15 +374,15 @@ A boolean type. This is a `solo` type by default, meaning it won't ever parse mo
 
 ### `Types.INTEGER` (multi = consumes at most two arguments)
 
-An integer type. This will parse a non-decimal, non-real number... and "integer". It will fail if there is a decimal place in the number provided. It does however support exponential notation, and can be either negative or positive. By default this is a `multi` command, so it *can* parse up to two arguments. It will however only parse a single argument if the "name=value" format is used for the argument. Examples: `--size=10`, or `--size=10e4`, or `--size=-5`, or `--size 10`, or `--size 10e4`, or `--size -5`.
+An integer type. This will parse a non-decimal, non-real number... an "integer" value. It will fail if there is a decimal place in the number provided. It does however support exponential notation, and can be either negative or positive. By default this is a `multi` command, so it *can* parse up to two arguments. It will however only parse a single argument if the "name=value" format is used for the argument. Examples: `--size=10`, or `--size=10e4`, or `--size=-5`, or `--size 10`, or `--size 10e4`, or `--size -5`.
 
 ### `Types.DECIMAL` (multi = consumes at most two arguments)
 
-An "floating point" type. This will parse a "real" number... and "decimal" floating point number. It supports exponential notation, and can be either negative or positive. By default this is a `multi` command, so it *can* parse up to two arguments. It will however only parse a single argument if the "name=value" format is used for the argument. Examples: `--size=10.55`, or `--size=10.5e4`, or `--size=-5.123`, or `--size 10.55`, or `--size 10.5e4`, or `--size -5.123`.
+A "floating point" type. This will parse a "real" number... and "decimal" floating point number. It supports exponential notation, and can be either negative or positive. By default this is a `multi` command, so it *can* parse up to two arguments. It will however only parse a single argument if the "name=value" format is used for the argument. Examples: `--size=10.55`, or `--size=10.5e4`, or `--size=-5.123`, or `--size 10.55`, or `--size 10.5e4`, or `--size -5.123`.
 
 ### `Types.HEX` (multi = consumes at most two arguments)
 
-An hex type. This will parse an integer value in hexadecimal notation. The hex value can be either negative or positive. By default this is a `multi` command, so it *can* parse up to two arguments. It will however only parse a single argument if the "name=value" format is used for the argument. Examples: `--size=0xF`, or `--size=-0xAF`, or `--size 0xF`, or `--size -0xAF`.
+A hex type. This will parse an integer value in hexadecimal notation. The hex value can be either negative or positive. By default this is a `multi` command, so it *can* parse up to two arguments. It will however only parse a single argument if the "name=value" format is used for the argument. Examples: `--size=0xF`, or `--size=-0xAF`, or `--size 0xF`, or `--size -0xAF`.
 
 ### `Types.OCTAL` (multi = consumes at most two arguments)
 
