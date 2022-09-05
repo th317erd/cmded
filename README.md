@@ -117,15 +117,15 @@ The `$` dollar sign is an alias for `match`. `match` is the core of CMDed. It wi
 
 There are a number of different ways `match` can be used. First, `match` can simply provided a string for a pattern to match against. If it is provided a string, then the match must be exact.
 
-You can also supply a regular expression (`RegExp`) to the Runner as the first argument (the "pattern"). If a `RegExp` is supplied, then the results of the matching regular expression will be passed as the second argument (the parser results) to the Runner. All of the built-in Runners won't know what to do with this "RegExp result", so if you are passing it into a built-in or non-custom runner, then you will need to format the parser results first. You can use the `formatParsedResult` option callback to do this. Whatever this method returns will be what is passed directly to the Runner. In order to be compatible with the default and built-in Runner interface, this must be an object, and it must have at least the keys `name` and `value` for the argument parsed. For `RegExp` patterns, only one argument will ever be "consumed" upon match. If you need to match against/parse more than a single argument, then you will need to create a Runner, or use a `Function` pattern instead.
+You can also supply a regular expression (`RegExp`) to the Runner as the first argument (the "pattern"). If a `RegExp` is supplied, then the results of the matching regular expression will be passed as the second argument (the parser results) to the Runner. All of the built-in Runners won't know what to do with this "RegExp result", so if you are passing it into a built-in or non-custom Runner, then you will need to format the parser results first. You can use the `formatParsedResult` option callback to do this. Whatever this method returns will be what is passed directly to the Runner. In order to be compatible with the default and built-in Runner interface, this must be an object, and it must have at least the keys `name` and `value` for the argument parsed. For `RegExp` patterns, only one argument will ever be "consumed" upon match. If you need to match against/parse more than a single argument, then you will need to create a Runner, or use a `Function` pattern instead.
 
-You can also supply a `Function` to the Runner as a pattern matcher. It is then up to the this pattern matcher to parse and consume as many arguments as it wants. This pattern matcher must consume all arguments positively matched. The underlying system can not know what was parsed, and therefor can not mark parsed arguments. Don't forget to consume each argument positively matched, or you will have some strange bugs later on down the line. A `Function` pattern matcher will be considered a successful match if a truthy value is returned. If this is the case, then the Runner will be called with the truthy result (after being passed through `formatParsedResult` if any was specified). As with all matchers, the minimum requirement to work with the default and built-in runners is to provide an object with at least `name` and `value` properties.
+You can also supply a `Function` to the Runner as a pattern matcher. It is then up to the this pattern matcher to parse and consume as many arguments as it wants. This pattern matcher must consume all arguments positively matched. The underlying system can not know what was parsed, and therefor can not mark parsed arguments. Don't forget to consume each argument positively matched, or you will have some strange bugs later on down the line. A `Function` pattern matcher will be considered a successful match if a truthy value is returned. If this is the case, then the Runner will be called with the truthy result (after being passed through `formatParsedResult` if any was specified). As with all matchers, the minimum requirement to work with the default and built-in Runners is to provide an object with at least `name` and `value` properties.
 
 ### Runner parameters
 
-All runners by default need no parameters. You can however optionally supply parameters to Runners. Here are the parameters that can be passed to all built-in runners.
+All Runners by default need no parameters. You can however optionally supply parameters to Runners. Here are the parameters that can be passed to all built-in Runners.
 
-*Note: Custom runners might have different parameters that can be supplied*.
+*Note: Custom Runners might have different parameters that can be supplied*.
 
 ```javascript
 {
@@ -176,7 +176,7 @@ CMDed(({ $ }) => {
       if (!allFinite)
         return false;
 
-      // Our runner will store the final result
+      // Our Runner will store the final result
       store({ [name]: value });
 
       // Success
@@ -201,7 +201,7 @@ There are many instances when `solo` mode is useful. For example, if you wanted 
 
 ### RunnerContext
 
-Each Runner is passed a `RunnerContext`, and many other methods are also provide this context. This context gives a handful of useful methods you can use to interact with the current argument context, for example `store`, and `fetch` to update the user context, `exit` to exit the program immediately, `hasMatch` to see if anything matched in the current runner, the `rootOptions` provided to the command parser, and `args` if you need to access the arguments directly.
+Each Runner is passed a `RunnerContext`, and many other methods are also provide this context. This context gives a handful of useful methods you can use to interact with the current argument context, for example `store`, and `fetch` to update the user context, `exit` to exit the program immediately, `hasMatch` to see if anything matched in the current Runner, the `rootOptions` provided to the command parser, and `args` if you need to access the arguments directly.
 
 #### `store` and `fetch`
 
@@ -215,7 +215,7 @@ Calling `exit` will call `process.exit` and terminate the program immediately. Y
 
 #### `hasMatch`
 
-Calling `hasMatch` will return `true` if any of the matchers inside the current runner had a successful match, or `false` otherwise. This is useful to call as the return value of your runner.
+Calling `hasMatch` will return `true` if any of the matchers inside the current Runner had a successful match, or `false` otherwise. This is useful to call as the return value of your Runner.
 
 #### `rootOptions`
 
@@ -231,7 +231,7 @@ Get the raw "user context".
 
 #### `scope`
 
-You can at any time spawn a new sub scope in the "user context" by calling `scope`. It will create a sub scope within the user context, under the name you provide, and then all runners under this scope will place their parsed values into this sub scope. For example:
+You can at any time spawn a new sub scope in the "user context" by calling `scope`. It will create a sub scope within the user context, under the name you provide, and then all Runners under this scope will place their parsed values into this sub scope. For example:
 
 ```javascript
 const { CMDed, Types } = require('cmded');
@@ -266,7 +266,7 @@ Mark a specified array of argument indexes as consumed. An argument can be manua
 
 #### `showHelp`
 
-Output to `stdout` the help defined for the current command, or current runner. By default, if this is called inside a runner, it will try to find the "sub section" of the defined `help` for the runner it was called from. If not matching "sub section" is found, then it will simply show the full help. The output of any `showHelp` call can be overloaded by providing your own `showHelp` method as a `rootOption` to your `CMDed` call.
+Output to `stdout` the help defined for the current command, or current Runner. By default, if this is called inside a Runner, it will try to find the "sub section" of the defined `help` for the Runner it was called from. If not matching "sub section" is found, then it will simply show the full help. The output of any `showHelp` call can be overloaded by providing your own `showHelp` method as a `rootOption` to your `CMDed` call.
 
 ## Help
 
@@ -304,11 +304,11 @@ If a `help` property has an object as a value, then it will be treated as a "sub
 
 By default, the internal "help" request for your command will be triggered with a `--help` argument. You can however change this to whatever you want by specifying the `helpArgPattern` parameter as a `rootOption` to your `CMDed` call.  Right now this only supports a single pattern.
 
-*Note: if you want aliases for your `--help` argument, then you can always specify them yourself as runners that will call `showHelp`, or you can submit a PR or issue request informing the CMDed team that you would like such a feature.*
+*Note: if you want aliases for your `--help` argument, then you can always specify them yourself as Runners that will call `showHelp`, or you can submit a PR or issue request informing the CMDed team that you would like such a feature.*
 
 ## CMDed
 
-`CMDed` is the main entry point for parsing your arguments. It takes two arguments, an entry point function (this is not a runner, it is just the entry point to start invoking matchers/runners), and a `rootOptions` object, specifying the root options for the process.
+`CMDed` is the main entry point for parsing your arguments. It takes two arguments, an entry point function (this is not a Runner, it is just the entry point to start invoking matchers/Runners), and a `rootOptions` object, specifying the root options for the process.
 
 The `rootOptions` has the following shape:
 
@@ -368,26 +368,26 @@ CMDed comes with the following built-in types:
 
 A boolean type. This is a `solo` type by default, meaning it won't ever parse more than a single argument. However, it is valid to use the `name=value` syntax for your arguments, allowing you to set the boolean to any value. By default, a "no value" argument will be assumed to be `true`, such as `--enabled`. You can specifically set the value like so: `--enabled=false`, or `--enabled=0`, or `--enabled=true`, or `--enabled=1`.
 
-### `Types.INTEGER` (NOT solo = consumes at most two arguments)
+### `Types.INTEGER` (multi = consumes at most two arguments)
 
-An integer type. This will parse a non-decimal, non-real number... and "integer". It will fail if there is a decimal place in the number provided. It does however support exponential notation, and can be either negative or positive. By default this is **not** a `solo` command, so it *can* parse up to two arguments. It will however only parse a single argument if the "name=value" format is used for the argument. Examples: `--size=10`, or `--size=10e4`, or `--size=-5`, or `--size 10`, or `--size 10e4`, or `--size -5`.
+An integer type. This will parse a non-decimal, non-real number... and "integer". It will fail if there is a decimal place in the number provided. It does however support exponential notation, and can be either negative or positive. By default this is a `multi` command, so it *can* parse up to two arguments. It will however only parse a single argument if the "name=value" format is used for the argument. Examples: `--size=10`, or `--size=10e4`, or `--size=-5`, or `--size 10`, or `--size 10e4`, or `--size -5`.
 
-### `Types.DECIMAL` (NOT solo = consumes at most two arguments)
+### `Types.DECIMAL` (multi = consumes at most two arguments)
 
-An "floating point" type. This will parse a "real" number... and "decimal" floating point number. It supports exponential notation, and can be either negative or positive. By default this is **not** a `solo` command, so it *can* parse up to two arguments. It will however only parse a single argument if the "name=value" format is used for the argument. Examples: `--size=10.55`, or `--size=10.5e4`, or `--size=-5.123`, or `--size 10.55`, or `--size 10.5e4`, or `--size -5.123`.
+An "floating point" type. This will parse a "real" number... and "decimal" floating point number. It supports exponential notation, and can be either negative or positive. By default this is a `multi` command, so it *can* parse up to two arguments. It will however only parse a single argument if the "name=value" format is used for the argument. Examples: `--size=10.55`, or `--size=10.5e4`, or `--size=-5.123`, or `--size 10.55`, or `--size 10.5e4`, or `--size -5.123`.
 
-### `Types.HEX` (NOT solo = consumes at most two arguments)
+### `Types.HEX` (multi = consumes at most two arguments)
 
-An hex type. This will parse an integer value in hexadecimal notation. The hex value can be either negative or positive. By default this is **not** a `solo` command, so it *can* parse up to two arguments. It will however only parse a single argument if the "name=value" format is used for the argument. Examples: `--size=0xF`, or `--size=-0xAF`, or `--size 0xF`, or `--size -0xAF`.
+An hex type. This will parse an integer value in hexadecimal notation. The hex value can be either negative or positive. By default this is a `multi` command, so it *can* parse up to two arguments. It will however only parse a single argument if the "name=value" format is used for the argument. Examples: `--size=0xF`, or `--size=-0xAF`, or `--size 0xF`, or `--size -0xAF`.
 
-### `Types.OCTAL` (NOT solo = consumes at most two arguments)
+### `Types.OCTAL` (multi = consumes at most two arguments)
 
-An octal type. This will parse an integer value in octal notation. The octal value can be either negative or positive. By default this is **not** a `solo` command, so it *can* parse up to two arguments. It will however only parse a single argument if the "name=value" format is used for the argument. Examples: `--size=0o777`, or `--size=-66`, or `--size 777`, or `--size -0o66`.
+An octal type. This will parse an integer value in octal notation. The octal value can be either negative or positive. By default this is a `multi` command, so it *can* parse up to two arguments. It will however only parse a single argument if the "name=value" format is used for the argument. Examples: `--size=0o777`, or `--size=-66`, or `--size 777`, or `--size -0o66`.
 
-### `Types.BYTES` (NOT solo = consumes at most two arguments)
+### `Types.BYTES` (multi = consumes at most two arguments)
 
-A size in bytes. This will parse an a size in the number of bytes. This value must be positive, or the match will fail. You can use the `b`, `k`, `kb`, `m`, `mb`, `g`, `gb`, `t`, and `tb` postfixes to specify the absolute size in bytes (case insensitive). Floating point or decimal values can be used. For example, `1.5mb` is valid. By default this is **not** a `solo` command, so it *can* parse up to two arguments. It will however only parse a single argument if the "name=value" format is used for the argument. Examples: `--bytes=10mb`, or `--bytes=32kb`, or `--bytes 1gb`, or `--bytes 1.5tb`.
+A size in bytes. This will parse an a size in the number of bytes. This value must be positive, or the match will fail. You can use the `b`, `k`, `kb`, `m`, `mb`, `g`, `gb`, `t`, and `tb` postfixes to specify the absolute size in bytes (case insensitive). Floating point or decimal values can be used. For example, `1.5mb` is valid. By default this is a `multi` command, so it *can* parse up to two arguments. It will however only parse a single argument if the "name=value" format is used for the argument. Examples: `--bytes=10mb`, or `--bytes=32kb`, or `--bytes 1gb`, or `--bytes 1.5tb`.
 
-### `Types.STRING` (NOT solo = consumes at most two arguments)
+### `Types.STRING` (multi = consumes at most two arguments)
 
-A string type. This will parse any string value. By default this is **not** a `solo` command, so it *can* parse up to two arguments. It will however only parse a single argument if the "name=value" format is used for the argument. Examples: `--name=Bob`, or `--name Bob`.
+A string type. This will parse any string value. By default this is a `multi` command, so it *can* parse up to two arguments. It will however only parse a single argument if the "name=value" format is used for the argument. Examples: `--name=Bob`, or `--name Bob`.
