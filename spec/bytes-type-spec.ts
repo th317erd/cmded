@@ -79,7 +79,7 @@ describe('BYTES', () => {
     expect(result).toEqual({ 'size': 65536 });
   });
 
-  test.only('should show help in strict mode', () => {
+  test('should show help in strict mode', () => {
     let showHelp = jest.fn();
 
     CMDed(

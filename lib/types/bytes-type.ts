@@ -18,13 +18,13 @@ const SCALAR_MAP: GenericObject = {
 export function BYTES(options?: GenericRunnerOptions): Runner {
   const runner = function ({ formatName, store }: RunnerContext, parsedResult: GenericObject): boolean {
     let name = formatName(parsedResult.name);
-    if (!(/^\d+(b|k|kb|m|mb|g|gb|t|tb)?$/i).test(parsedResult.value))
+    if (!(/^\+?[\d.]+(b|k|kb|m|mb|g|gb|t|tb)?$/i).test(parsedResult.value))
       return false;
 
     let size: string = '';
     let scalar: string = 'b';
 
-    parsedResult.value.replace(/^(\d+)(b|k|m|g|t)?/, (m: string, _size: string, _scalar: string | undefined) => {
+    parsedResult.value.replace(/^\+?([\d.]+)(b|k|m|g|t)?/i, (m: string, _size: string, _scalar: string | undefined) => {
       size = _size;
       scalar = (_scalar || 'b').toLowerCase();
 

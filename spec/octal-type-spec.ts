@@ -62,8 +62,8 @@ describe('OCTAL', () => {
   });
 
   test('can parse equals=345 argument', () => {
-    let result = CMDed(integerHandler, { argv: [ '--size=0xB' ] });
-    expect(result).toEqual({ 'size': 11 });
+    let result = CMDed(integerHandler, { argv: [ '--size=333' ] });
+    expect(result).toEqual({ 'size': 219 });
   });
 
   test('can parse equals=-543 argument', () => {
@@ -76,7 +76,7 @@ describe('OCTAL', () => {
     expect(result).toEqual({ 'size': 5 });
   });
 
-  test.only('should show help in strict mode', () => {
+  test('should show help in strict mode', () => {
     let showHelp = jest.fn();
 
     CMDed(

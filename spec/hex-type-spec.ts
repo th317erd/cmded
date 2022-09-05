@@ -76,7 +76,7 @@ describe('HEX', () => {
     expect(result).toEqual({ 'size': 15 });
   });
 
-  test.only('should show help in strict mode', () => {
+  test('should show help in strict mode', () => {
     let showHelp = jest.fn();
 
     CMDed(

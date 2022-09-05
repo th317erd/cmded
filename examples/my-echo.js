@@ -47,7 +47,7 @@ if (args.duplicate)
 
 // Now let's echo
 if (args.useSystemEcho) {
-  spawn('echo', remainingArgs);
+  spawn('echo', remainingArgs, { stdio: 'inherit' });
 } else {
   console.log(remainingArgs.join(' '));
 }
