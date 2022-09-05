@@ -1,3 +1,4 @@
+import Nife from 'nife';
 import { GenericObject } from "../common";
 import { Runner, RunnerContext } from "../runner-context";
 import { GenericRunnerOptions } from "./common";
@@ -16,7 +17,7 @@ const SCALAR_MAP: GenericObject = {
 };
 
 export function BYTES(options?: GenericRunnerOptions): Runner {
-  const runner = function ({ formatName, store }: RunnerContext, parsedResult: GenericObject): boolean {
+  const runner = function ({ formatName, store }: RunnerContext, parsedResult: GenericObject, runnerOptions: GenericObject): boolean {
     let name = formatName(parsedResult.name);
     if (!(/^\+?[\d.]+(b|k|kb|m|mb|g|gb|t|tb)?$/i).test(parsedResult.value))
       return false;
@@ -41,8 +42,9 @@ export function BYTES(options?: GenericRunnerOptions): Runner {
     let scalarN: number = SCALAR_MAP[ scalar ] || 1;
     value = Math.round(value * scalarN);
 
-    if (options && typeof options.validate === 'function') {
-      let result = options.validate(value, arguments[ 0 ]);
+    let validate = Nife.get(runnerOptions, 'validate', Nife.get(options, 'validate'));
+    if (typeof validate === 'function') {
+      let result = validate(value, arguments[ 0 ]);
       if (!result)
         return false;
     }

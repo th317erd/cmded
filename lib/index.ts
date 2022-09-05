@@ -91,7 +91,7 @@ export function CMDed(runner: Runner, _options?: RootOptions): FinalResult {
       return;
   }
 
-  let result = runner(runnerContext, {});
+  let result = runner(runnerContext, {}, {});
   if (Nife.instanceOf(result, 'promise')) {
     let promise = result as Promise<boolean>;
 

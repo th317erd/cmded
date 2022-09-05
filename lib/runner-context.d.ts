@@ -3,7 +3,7 @@ import { GenericObject } from './common';
 import { RootOptions } from "./root-options";
 export declare type RunnerResult = Promise<boolean> | boolean;
 export declare type Runner = {
-    (context: RunnerContext, parsedResult: GenericObject): RunnerResult;
+    (context: RunnerContext, parsedResult: GenericObject, options: GenericObject): RunnerResult;
     parserOptions?: GenericObject;
     wrapper?: boolean;
 };
