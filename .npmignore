@@ -110,3 +110,4 @@ coverage
 tsconfig.json
 **/external/nife.d.ts
 examples
+docs
