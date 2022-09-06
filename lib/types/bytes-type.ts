@@ -18,7 +18,7 @@ const SCALAR_MAP: GenericObject = {
 
 export function BYTES(options?: GenericRunnerOptions): Runner {
   const runner = function ({ formatName, store }: RunnerContext, parsedResult: GenericObject, runnerOptions: GenericObject): boolean {
-    let name = formatName(parsedResult.name);
+    let name = formatName(runnerOptions.name || parsedResult.name);
     if (!(/^\+?[\d.]+(b|k|kb|m|mb|g|gb|t|tb)?$/i).test(parsedResult.value))
       return false;
 

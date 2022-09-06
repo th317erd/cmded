@@ -5,7 +5,7 @@ import { GenericRunnerOptions } from "./common";
 
 export function BOOLEAN(options?: GenericRunnerOptions): Runner {
   const runner = function ({ formatName, store }: RunnerContext, parsedResult: GenericObject, runnerOptions: GenericObject): boolean {
-    let name = formatName(parsedResult.name);
+    let name = formatName(runnerOptions.name || parsedResult.name);
     let value = (parsedResult.value == null || (/^true|1$/i).test(parsedResult.value));
 
     let validate = Nife.get(runnerOptions, 'validate', Nife.get(options, 'validate'));

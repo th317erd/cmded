@@ -5,7 +5,7 @@ import { GenericRunnerOptions } from "./common";
 
 export function STRING(options?: GenericRunnerOptions): Runner {
   const runner = function ({ formatName, store }: RunnerContext, parsedResult: GenericObject, runnerOptions: GenericObject): boolean {
-    let name = formatName(parsedResult.name);
+    let name = formatName(runnerOptions.name || parsedResult.name);
     let value = parsedResult.value;
     if (value == null)
       return false;

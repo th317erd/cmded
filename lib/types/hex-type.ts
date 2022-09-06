@@ -5,7 +5,7 @@ import { GenericRunnerOptions } from "./common";
 
 export function HEX(options?: GenericRunnerOptions): Runner {
   const runner = function ({ formatName, store }: RunnerContext, parsedResult: GenericObject, runnerOptions: GenericObject): boolean {
-    let name = formatName(parsedResult.name);
+    let name = formatName(runnerOptions.name || parsedResult.name);
     if (!(/^[+-]?0x[0-9A-F]+$/i).test(parsedResult.value))
       return false;
 

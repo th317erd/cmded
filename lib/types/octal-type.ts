@@ -5,7 +5,7 @@ import { GenericRunnerOptions } from "./common";
 
 export function OCTAL(options?: GenericRunnerOptions): Runner {
   const runner = function ({ formatName, store }: RunnerContext, parsedResult: GenericObject, runnerOptions: GenericObject): boolean {
-    let name = formatName(parsedResult.name);
+    let name = formatName(runnerOptions.name || parsedResult.name);
     if (!(/^[+-]?(0o)?[0-7]+$/i).test(parsedResult.value))
       return false;
 

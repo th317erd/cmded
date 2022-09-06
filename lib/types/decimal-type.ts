@@ -5,7 +5,7 @@ import { GenericRunnerOptions } from "./common";
 
 export function DECIMAL(options?: GenericRunnerOptions): Runner {
   const runner = function ({ formatName, store }: RunnerContext, parsedResult: GenericObject, runnerOptions: GenericObject): boolean {
-    let name = formatName(parsedResult.name);
+    let name = formatName(runnerOptions.name || parsedResult.name);
     if (!(/^[+-]?(\d*.\d+|\d+.\d*)(e[+-]?\d+)?$/).test(parsedResult.value))
       return false;
 
