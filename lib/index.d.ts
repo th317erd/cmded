@@ -2,7 +2,7 @@ import { Runner } from './runner-context';
 import { RootOptions } from './root-options';
 import { GenericObject } from './common';
 export declare type FinalResult = Promise<GenericObject | undefined> | GenericObject | undefined;
-export declare function CMDed(runner: Runner, _options?: RootOptions): FinalResult;
+export declare function CMDed(entryMethod: Runner, _options?: RootOptions): FinalResult;
 export * as Types from './types';
 export * from './arguments';
 export * from './common';

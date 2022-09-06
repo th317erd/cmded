@@ -348,7 +348,7 @@ Specify a parser for parsing all arguments. By default, this is the `defaultPars
 
 The default formatter to apply to argument `name`s to convert them into "user context" key names. For example, the argument named `--use-system-echo` will be converted into camel case `useSystemEcho`. You can provide any formatter you want to format the name of your arguments and turn them in to user context key names.
 
-### `showHelp` = `undefined`
+#### `showHelp` = `undefined`
 
 A custom `--help` output function that will write the command's help to stdout. This is a complete replacement of the built-in `showHelp` method. If you supply this, you must output all the help for your command. However, the `help` object will be provided to this call, so you will have something to work with to output the help.
 

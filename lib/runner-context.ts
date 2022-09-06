@@ -107,7 +107,7 @@ export class RunnerContext {
   ///   the instance this method was called upon.
   ///
   /// Arguments:
-  ///   options: RunnerContextOptions
+  ///   options?: RunnerContextOptions
   ///     Any optional options to override. None need to be supplied.
   ///     Any property that isn't supplied will just be inherited
   ///     from the current RunnerContext that is being cloned.
@@ -149,13 +149,17 @@ export class RunnerContext {
   /// returned as a key. In this case, you can see that the resulting key
   /// is `test`, which is the final part of `some.deep.key.test`.
   ///
+  /// If no arguments are provided, then this is equivalent to calling
+  /// `RunnerContext.context`, and the entire "user context" will be
+  /// returned.
+  ///
   /// Return: any
   ///
   /// Arguments:
-  ///   scope: object | string
+  ///   scope?: object | string
   ///     The "scope" to fetch. This can be a string to fetch a single property
   ///     from the context, or it can be an object with the shape `{ propertyName: defaultValueIfNotFound }`.
-  ///   defaultValue: any
+  ///   defaultValue?: any
   ///     When the `scope` argument is a string, this specifies the default value
   ///     to fallback to if the lookup results in an `undefined` value. When
   ///     the `scope` argument is an object then this argument is ignored.
@@ -231,7 +235,7 @@ export class RunnerContext {
   ///     into the context, or it can be an object with the shape `{ propertyName: value }`.
   ///     If an object is provided, then it will be "deep merged" into the underlying
   ///     "user context".
-  ///   value: any
+  ///   value?: any
   ///     When the `scope` argument is a string, this specifies the value
   ///     to set onto the specified key. When the `scope` argument is
   ///     an object, then this argument is ignored.
@@ -351,18 +355,19 @@ export class RunnerContext {
   /// Return: any
   ///
   /// Arguments:
-  ///   options: object
+  ///   options?: object
   ///     Any options you wish to provide to your parser. Internally,
   ///     CMDed will provide the following options to a parser call:
   ///     `{ consume: boolean, pattern: string, solo: boolean }`.
-  ///   index: number
-  ///     The argument index to start parsing at.
+  ///   index?: number
+  ///     The argument index to start parsing at. If none is provided,
+  ///     then `RunnerContext.args.currentIndex` will be used instead.
   parse = (options?: GenericObject, index?: number): GenericObject | undefined => {
     let parser = this.rootOptions.parser;
     if (!parser)
       throw new Error('RunnerContext:parse: "parser" not defined, but is required.');
 
-    return parser(this, options, index);
+    return parser(this, options, (index == null) ? this.args.currentIndex : index);
   }
 
   /// Convert argument names to property names
@@ -481,7 +486,7 @@ export class RunnerContext {
   ///     The Runner to invoke upon successful match. The Runner method will be provided the
   ///     "parser results" as the second argument, after those results are passed through the
   ///     `formatParsedResult` Runner option... if any was supplied.
-  ///   options: object
+  ///   options?: object
   ///     The options to pass to the parser and Runner. These will be passed as the second
   ///     argument to the parser, and as the third argument to the Runner. These can be any
   ///     user defined values needed for your parser/Runner. The built-in Runners can be
@@ -634,7 +639,7 @@ export class RunnerContext {
   /// Return: void
   ///
   /// Arguments:
-  ///   path: string
+  ///   path?: string
   ///     A "dot notation" path to lookup inside the `help` object
   ///     for showing the proper help. If none is provided, or
   ///     not found in the `help` object, then the entire `help`
