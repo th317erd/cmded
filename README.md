@@ -199,7 +199,7 @@ All Runners by default (except for `BOOLEAN`) will parse two arguments if they n
 
 To turn off this default behavior of parsing two different formats, and up to two arguments, you can pass the `{ solo: true }` parameter to a Runner. Doing so will force the parser to only parse and consume a single argument. For example, if you wanted to parse a single argument that you knew was an integer, then you could `Types.INTEGER({ solo: true })`, and this would parse an integer argument like `10`, or `10e4`, or `-10`. It would also parse something like `name=10`, or `name=10e4`, or `name=-10`. It wouldn't however parse something like `name 10`. This would need to parse and consume two arguments, which is disallowed when in `solo` mode.
 
-There are many instances when `solo` mode is useful. For example, if you wanted to parse an array of arguments, you could use a built-in parser such as `Types.INTEGER`, and simple match against it as many times as needed while in `solo` mode.
+There are many instances when `solo` mode is useful. For example, if you wanted to parse an array of arguments, you could use a built-in parser such as `Types.INTEGER`, and simply match against it as many times as needed while in `solo` mode.
 
 ### RunnerContext
 
