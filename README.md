@@ -392,7 +392,7 @@ An octal type. This will parse an integer value in octal notation. The octal val
 
 ### `Types.BYTES` (multi = consumes at most two arguments)
 
-A size in bytes. This will parse an a size in the number of bytes. This value must be positive, or the match will fail. You can use the `b`, `k`, `kb`, `m`, `mb`, `g`, `gb`, `t`, and `tb` postfixes to specify the absolute size in bytes (case insensitive). Floating point or decimal values can be used. For example, `1.5mb` is valid. By default this is a `multi` command, so it *can* parse up to two arguments. It will however only parse a single argument if the "name=value" format is used for the argument. Examples: `--bytes=10mb`, or `--bytes=32kb`, or `--bytes 1gb`, or `--bytes 1.5tb`.
+A size in bytes. This will parse a size in the number of bytes. This value must be positive, or the match will fail. You can use the `b`, `k`, `kb`, `m`, `mb`, `g`, `gb`, `t`, and `tb` postfixes to specify the absolute size in bytes (case insensitive). Floating point or decimal values can be used. For example, `1.5mb` is valid. By default this is a `multi` command, so it *can* parse up to two arguments. It will however only parse a single argument if the "name=value" format is used for the argument. Examples: `--bytes=10mb`, or `--bytes=32kb`, or `--bytes 1gb`, or `--bytes 1.5tb`.
 
 ### `Types.STRING` (multi = consumes at most two arguments)
 

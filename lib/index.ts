@@ -49,7 +49,7 @@ export declare type FinalResult = Promise<GenericObject | undefined> | GenericOb
 /// Return: Promise<object | undefined> | boolean | undefined
 ///
 /// Arguments:
-///   entryMethod: (context: RunnerContext) => Promise<boolean> | boolean
+///   entryMethod: ((context: RunnerContext) => Promise<boolean> | boolean)
 ///     Specify entry point to start executing matchers and Runners.
 ///   options?: RootOptions
 ///     Specify `rootOptions` for parsing.
