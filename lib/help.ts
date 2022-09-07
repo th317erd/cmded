@@ -22,27 +22,11 @@ function generateWhitespace(count: number) {
 }
 
 export function showHelp(help: HelpInterface, fullHelp?: HelpInterface, helpPath?: string, context?: RunnerContext) {
-  let usage = help[ '@usage' ];
   let programName = Path.basename(process.argv[ 1 ]);
-  let parts = [];
+  let parts: Array<string> = [];
   let helpArgument = context?.rootOptions.helpArgPattern;
 
-  if (!usage) {
-    let path = '';
-    if (Nife.isNotEmpty(helpPath))
-      path = ('' + helpPath).split(/\./g).join(' ');
-
-    parts.push(`Usage: ${programName} ${(path) ? `${path} ` : ' '}[options]\n`);
-  } else {
-    parts.push(`Usage: ${usage}\n`);
-  }
-
-  let title = help[ '@title' ];
-  if (title)
-    parts.push(`\n${title}\n`);
-
-  parts.push('\nOptions:\n');
-
+  let optionParts = [];
   let keys = Object.keys(help).sort();
   let alignmentSpaces = findLongestString(keys.filter((str) => (str.charAt(0) !== '@')));
   if (alignmentSpaces % 2)
@@ -60,7 +44,7 @@ export function showHelp(help: HelpInterface, fullHelp?: HelpInterface, helpPath
     let argNames = key.split('|').map((part) => part.trim());
     for (let j = 0, jl = argNames.length; j < jl; j++) {
       let argName = argNames[ j ];
-      parts.push(`  ${argName}:\n`);
+      optionParts.push(`  ${argName}:\n`);
     }
 
     if (Nife.instanceOf(value, 'object')) {
@@ -76,10 +60,30 @@ export function showHelp(help: HelpInterface, fullHelp?: HelpInterface, helpPath
       if (!see && helpArgument)
         see = `See: '${programName} ${key} ${helpArgument}' for more help`;
 
-      parts.push(`${('' + title).trim().replace(/^\s*/gm, '    ')}\n    ${see}\n`);
+      optionParts.push(`${('' + title).trim().replace(/^\s*/gm, '    ')}\n    ${see}\n`);
     } else {
-      parts.push(`${('' + value).trim().replace(/^\s*/gm, '    ')}\n`);
+      optionParts.push(`${('' + value).trim().replace(/^\s*/gm, '    ')}\n`);
     }
+  }
+
+  let usage = help[ '@usage' ];
+  if (!usage) {
+    let path = '';
+    if (Nife.isNotEmpty(helpPath))
+      path = ('' + helpPath).split(/\./g).join(' ');
+
+    parts.push(`Usage: ${programName} ${(path) ? path : ''}${(optionParts.length > 0) ? ' [options]' : ''}\n`);
+  } else {
+    parts.push(`Usage: ${usage}\n`);
+  }
+
+  let title = help[ '@title' ];
+  if (title)
+    parts.push(`\n${title}\n`);
+
+  if (optionParts.length > 0) {
+    parts.push('\nOptions:\n');
+    parts = parts.concat(optionParts);
   }
 
   let examples = Nife.toArray(help[ '@examples' ]).filter(Boolean);
