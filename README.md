@@ -129,11 +129,14 @@ All Runners by default need no parameters. You can however optionally supply par
 
 ```javascript
 {
+  formatParsedResult: (value: any, context: RunnerContext, options: object) => {
+    // Format the result returned by the parser, the RegExp pattern matcher, or the function pattern matcher. "options" are the options supplied to the Runner.
+  },
   validate: (value: any, context: RunnerContext): boolean => {
     // validate the parsed "value"
   },
-  formatParsedResult: (value: any, context: RunnerContext, options: object) => {
-    // Format the result returned by the parser, the RegExp pattern matcher, or the function pattern matcher. "options" are the options supplied to the Runner.
+  format: (value: any): any => {
+    // Format the value after parsing and validation
   },
   solo: true, // Solo forces the parser to only parse a single argument
 }

@@ -17,6 +17,10 @@ export function STRING(options?: GenericRunnerOptions): Runner {
         return false;
     }
 
+    let format = Nife.get(runnerOptions, 'format', Nife.get(options, 'format'));
+    if (typeof format === 'function')
+      value = format(value);
+
     store({ [ name ]: value });
 
     return true;

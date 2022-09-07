@@ -14,15 +14,22 @@ All built-in types have the following options that can be provided:
 
 ```typescript
 interface RunnerOptions {
-  // Validate the argument's value after parsing.
-  // If this returns `false` then the Runner will
-  // return `false`, reporting it has "failed".
-  validate?: (value: any, context: RunnerContext) => boolean;
-
   // Format the results returned from the parser.
   // This is often useful, and needed if you are
   // using a `RegExp` pattern matcher.
   formatParsedResult?: (value: any, context: RunnerContext, parsedResult) => object;
+
+  // Validate the argument's value after parsing,
+  // but before "format" is called.
+  // If this returns `false` then the Runner will
+  // return `false`, reporting it has "failed".
+  validate?: (value: any, context: RunnerContext) => boolean;
+
+  // Format the argument's value after parsing.
+  // If specified, any value returned from this
+  // method will be the resulting value of the argument.
+  // This method is called *after** "validate" is called.
+  format?: (value: any) => any;
 
   // If `true`, then this informs the parser to only ever
   // parse a single argument.
