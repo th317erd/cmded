@@ -281,6 +281,11 @@ Help has a nice output formatter built-in for you, but must be manually defined.
 
 If an `@usage` key is specified in a scope or sub scope of the `help`, then it will be use to show the `Usage: ` title of the help output.
 
+### `@title`
+
+If an `@title` key is specified in a scope or sub scope of the `help`, then it will be
+shown directly under the `Usage: ` at the top of the help. This should describe what the command or sub-command does. If not provided for a sub-command, this will just fallback to some sane default, showing the user how to invoke the sub-command.
+
 ### `@examples`
 
 An `@examples` key, with a value that is an array of strings, will show a list of examples at the end of your help output.
@@ -288,10 +293,6 @@ An `@examples` key, with a value that is an array of strings, will show a list o
 ### `@notes`
 
 An `@notes` key, with a value that is an array of strings, will show a list of notes at the end of your help output.
-
-### `@title`
-
-Used for sub commands. This specifies some short title to show for the sub command. The sub command will then have its own `help` sub scope to fully describe the usage of the sub command. If not provided, this will just fallback to some sane default, showing the user how to invoke the sub command.
 
 ### `@see`
 

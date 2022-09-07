@@ -37,6 +37,10 @@ export function showHelp(help: HelpInterface, fullHelp?: HelpInterface, helpPath
     parts.push(`Usage: ${usage}\n`);
   }
 
+  let title = help[ '@title' ];
+  if (title)
+    parts.push(`\n${title}\n`);
+
   parts.push('\nOptions:\n');
 
   let keys = Object.keys(help).sort();

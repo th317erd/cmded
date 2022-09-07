@@ -1,6 +1,6 @@
 import { GenericObject } from "./common";
 import { HelpInterface } from "./help";
-import { RunnerContext } from "./runner-context";
+import { Runner, RunnerContext } from "./runner-context";
 
 export declare interface RootOptions {
   strict?: boolean;
@@ -10,4 +10,7 @@ export declare interface RootOptions {
   showHelp?: (subHelp: HelpInterface | undefined, help: HelpInterface | undefined, helpPath: string, context: RunnerContext) => void;
   help?: HelpInterface | null;
   helpArgPattern?: string | null;
+  types?: {
+    [ key: string ]: Function,
+  };
 }

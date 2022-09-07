@@ -7,7 +7,7 @@ import { Arguments } from './arguments';
 import { defaultParser } from './default-parser';
 import { defaultFormatter } from './default-formatter';
 import { GenericObject } from './common';
-import { showHelp } from './help';
+import * as Types from './types';
 
 export declare type FinalResult = Promise<GenericObject | undefined> | GenericObject | undefined;
 
@@ -44,6 +44,11 @@ export declare type FinalResult = Promise<GenericObject | undefined> | GenericOb
 ///
 ///     // Specify the pattern of the argument that will trigger the help, default is `"--help"`.
 ///     helpArgPattern?: string | null;
+///
+///     // Specify extra types to pass through to the "Types" context variable
+///     types?: {
+///       [ key: string ]: Function,
+///     };
 ///   }
 ///
 /// Return: Promise<object | undefined> | boolean | undefined
@@ -63,12 +68,15 @@ export function CMDed(entryMethod: Runner, _options?: RootOptions): FinalResult 
     ...(_options || {}),
   };
 
+  rootOptions.types = { ...Types, ...(rootOptions.types || {}) };
+
   let context: GenericObject = {};
   let runnerContext = new RunnerContext({
     rootOptions,
     context,
     args: new Arguments(rootOptions.argv || []),
     runnerPath: '',
+    types: rootOptions.types,
   });
 
   Object.defineProperties(context, {

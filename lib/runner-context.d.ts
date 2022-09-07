@@ -1,6 +1,6 @@
-import { Arguments } from "./arguments";
+import { Arguments } from './arguments';
 import { GenericObject } from './common';
-import { RootOptions } from "./root-options";
+import { RootOptions } from './root-options';
 export declare type RunnerResult = Promise<boolean> | boolean;
 export declare type Runner = {
     (context: RunnerContext, parsedResult: GenericObject, options: GenericObject): RunnerResult;
@@ -13,6 +13,9 @@ export interface RunnerContextOptions {
     context: GenericObject;
     args: Arguments;
     runnerPath: string;
+    types?: {
+        [key: string]: Function;
+    };
 }
 export declare class RunnerContext {
     private options;
@@ -22,12 +25,18 @@ export declare class RunnerContext {
     get args(): Arguments;
     get context(): GenericObject;
     get runnerPath(): string;
+    get Types(): {
+        [key: string]: Function;
+    };
     clone: (options?: {
-        rootOptions?: RootOptions;
-        context?: GenericObject;
-        args?: Arguments;
-        runnerPath?: string;
-    }) => RunnerContext;
+        rootOptions?: RootOptions | undefined;
+        context?: GenericObject | undefined;
+        args?: Arguments | undefined;
+        runnerPath?: string | undefined;
+        types?: {
+            [key: string]: Function;
+        } | undefined;
+    } | undefined) => RunnerContext;
     fetch: (_scope?: GenericObject | string, defaultValue?: any) => any;
     store: (_scope: GenericObject | string, value?: any) => void;
     scope: (name: string, runner: Runner) => Promise<boolean> | boolean;

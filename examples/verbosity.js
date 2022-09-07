@@ -3,6 +3,7 @@
 const { CMDed, showHelp } = require('../');
 
 const help = {
+  '@title': 'Set the verbosity level by repeating the "-v" argument',
   '@examples': [
     'verbosity -v',
     'verbosity -v -v -v',

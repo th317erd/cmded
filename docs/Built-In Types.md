@@ -2,10 +2,48 @@
 
 ## How to access built-in types
 
-Built-in types can be accessed via the `Types` import.
+Built-in types can be accessed via the `Types` import:
 
 ```javascript
-const { CMDed, Types } = require('cmded);
+const { CMDed, Types } = require('cmded');
+```
+
+Or they can be accessed directly from the `RunnerContext`:
+
+```javascript
+const { CMDed } = require('cmded');
+
+const MY_GREETING_RUNNER = ({ $ }) => {
+  return $(
+    /hello|hi|hiya|greetings/,
+    ({ store }, parsedResult, options) => {
+      let name = (options && options.name) || parsedResult.name;
+      store({ [name]: parsedResult.value });
+
+      return true;
+    },
+    {
+      formatParsedResult: (value) => {
+        return { name: 'greeting', value: value };
+      },
+    }
+  );
+};
+
+let userContext = CMDed(
+  (context) => {
+    let { $, Types } = context;
+
+    $('--wave', Types.BOOLEAN());
+
+    return Types.MY_GREETING_RUNNER(context);
+  },
+  {
+    types: {
+      MY_GREETING_RUNNER
+    },
+  },
+);
 ```
 
 ## Built-in type `options`

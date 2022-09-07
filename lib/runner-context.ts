@@ -1,8 +1,9 @@
 import Nife from 'nife';
-import { Arguments } from "./arguments";
+import { Arguments } from './arguments';
 import { GenericObject } from './common';
 import { showHelp } from './help';
-import { RootOptions } from "./root-options";
+import { RootOptions } from './root-options';
+import * as Types from './types';
 
 export declare type RunnerResult = Promise<boolean> | boolean;
 export declare type Runner = {
@@ -18,6 +19,9 @@ export interface RunnerContextOptions {
   context: GenericObject;
   args: Arguments;
   runnerPath: string;
+  types?: {
+    [ key: string ]: Function,
+  };
 }
 
 /// A RunnerContext instance is passed as the first argument
@@ -61,6 +65,9 @@ export interface RunnerContextOptions {
 ///     For example, if you invoked <see>RunnerContext.showHelp</see>
 ///     inside the `sub-command` Runner, then the help system would
 ///     look for `help['sub-command']` to display the help.
+///   Types: object
+///     Access built-in types, plus any types defined on the `types`
+///     provided to <see>CMDed.CMDed</see> `rootOptions`.
 export class RunnerContext {
   declare private options: RunnerContextOptions;
   declare private matchCount: number;
@@ -99,6 +106,10 @@ export class RunnerContext {
     return this.options.runnerPath;
   }
 
+  get Types(): { [ key: string ]: Function } {
+    return this.options.types || Types;
+  }
+
   /// Clone this RunnerContext, optionally
   /// providing "option" overrides for the clone.
   ///
@@ -116,12 +127,16 @@ export class RunnerContext {
     context?: GenericObject;
     args?: Arguments;
     runnerPath?: string;
+    types?: {
+      [ key: string ]: Function,
+    };
   }): RunnerContext => {
     return new RunnerContext({
       rootOptions: this.rootOptions,
       context: this.context,
       args: this.args,
       runnerPath: this.runnerPath,
+      types: this.options.types,
       ...(options || {}),
     });
   }

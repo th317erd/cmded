@@ -6,6 +6,7 @@ const { spawn } = require('child_process');
 // Define our help for this command
 const help = {
   '@usage': 'my-echo [options] ...arg1 ...arg2 ...argN',
+  '@title': 'Echo arguments back to caller',
   '@examples': [
     './my-echo hello world',
     './my-echo --duplicate hello world',

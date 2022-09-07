@@ -9,4 +9,7 @@ export declare interface RootOptions {
     showHelp?: (subHelp: HelpInterface | undefined, help: HelpInterface | undefined, helpPath: string, context: RunnerContext) => void;
     help?: HelpInterface | null;
     helpArgPattern?: string | null;
+    types?: {
+        [key: string]: Function;
+    };
 }
