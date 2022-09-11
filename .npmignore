@@ -111,3 +111,5 @@ tsconfig.json
 **/external/nife.d.ts
 examples
 docs
+.biblorc.js
+README.md
