@@ -14,7 +14,7 @@
     "typescript": "^4.8.2"
   },
   "dependencies": {
-    "nife": "^1.12.0"
+    "nife": "^1.12.1"
   },
   "scripts": {
     "test": "./node_modules/.bin/jest",
