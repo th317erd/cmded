@@ -1,7 +1,7 @@
 import Nife from 'nife';
 import { Arguments } from './arguments';
 import { GenericObject } from './common';
-import { showHelp } from './help';
+import { HelpInterface, showHelp } from './help';
 import { RootOptions } from './root-options';
 import * as Types from './types';
 
@@ -660,9 +660,9 @@ export class RunnerContext {
   ///     not found in the `help` object, then the entire `help`
   ///     object will be supplied to the `showHelp` internal method
   ///     instead.
-  showHelp = (_path?: string): void => {
+  showHelp = (_path?: string, providedHelp?: HelpInterface): void => {
     let showHelpFunc = this.rootOptions.showHelp;
-    let help = this.rootOptions.help || {};
+    let help = (providedHelp) ? providedHelp : this.rootOptions.help || {};
     let path = (_path != null) ? _path : this.runnerPath;
 
     let subHelp = (path) ? Nife.get(help, path, help) : help;

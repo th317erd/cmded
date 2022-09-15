@@ -1,5 +1,6 @@
 import { Arguments } from './arguments';
 import { GenericObject } from './common';
+import { HelpInterface } from './help';
 import { RootOptions } from './root-options';
 export declare type RunnerResult = Promise<boolean> | boolean;
 export declare type Runner = {
@@ -45,7 +46,7 @@ export declare class RunnerContext {
     markConsumed: (_indexes: Array<number> | number) => void;
     match: (_pattern: string | RegExp | PatternMatcher | null | undefined, runner: Runner, options?: GenericObject) => Promise<boolean> | boolean;
     get $(): (_pattern: string | RegExp | PatternMatcher | null | undefined, runner: Runner, options?: GenericObject) => Promise<boolean> | boolean;
-    showHelp: (_path?: string) => void;
+    showHelp: (_path?: string, providedHelp?: HelpInterface) => void;
     hasMatches: () => boolean;
     exit: (statusCode: number) => void;
 }
