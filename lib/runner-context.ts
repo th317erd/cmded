@@ -307,7 +307,7 @@ export class RunnerContext {
   ///     named scope.
   scope = (name: string, runner: Runner): Promise<boolean> | boolean => {
     let context = this.context;
-    let subScope: GenericObject = context[ name ] = {};
+    let subScope: GenericObject = context[ name ] = Object.create(context || {});
 
     Object.defineProperties(subScope, {
       '_super': {
