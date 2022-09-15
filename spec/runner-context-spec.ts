@@ -138,7 +138,10 @@ describe('RunnerContext', () => {
         },
         testScope: {
           derp: true,
-          subContext: { deep: 'merging' },
+          subContext: {
+            deep: 'merging',
+            test: true,
+          },
         },
       });
     });
